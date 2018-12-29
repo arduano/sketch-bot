@@ -11,7 +11,7 @@ export class DiscordBot {
 		this.client.on('ready', () => {
 			console.log('The bot is ready!');
 			console.log('Starting server...');
-			this.client.user.setGame('testing');
+			this.client.user.setActivity('testing');
 		});
 
 		this.client.login(token);

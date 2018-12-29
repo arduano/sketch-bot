@@ -6,6 +6,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "cloud-repo-tools": {
+    "requiresKeyFile": true,
+    "requiresProjectId": true,
+    "test": {
+      "app": {
+        "args": [
+          "server.js"
+        ],
+        "msg": "Hello, world!"
+      }
+    }
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
