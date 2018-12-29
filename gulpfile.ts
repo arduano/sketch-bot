@@ -25,8 +25,11 @@ async function serverBuild(cb: any) {
   await pRun('cd Server && tsc')
   //await pRun('copy package.json www\\package.json')
   //await pRun('copy settings.json www\\settings.json')
-  fs.unlinkSync('www\\package.json')
-  fs.unlinkSync('www\\settings.json')
+  try{
+    fs.unlinkSync('www\\package.json')
+    fs.unlinkSync('www\\settings.json')
+  }
+  catch{}
   fs.copyFileSync('package.json', 'www\\package.json', function (e: any) {
     console.log(e);
     throw e;
