@@ -24,8 +24,9 @@ async function pRun(command: any) {
 async function serverBuild(cb: any) {
   await pRun('cd Server && tsc')
   try{
-    fs.unlinkSync('www\\package.json')
-    fs.unlinkSync('www\\settings.json')
+    fs.unlinkSync('www/package.json')
+    fs.unlinkSync('www/settings.json')
+    fs.unlinkSync('www/app.yaml')
   }
   catch{}
   fs.copyFileSync('package.json', 'www/package.json', function (e: any) {
@@ -36,7 +37,7 @@ async function serverBuild(cb: any) {
     console.log(e);
     throw e;
   })
-  fs.copyFileSync('app.yaml', 'app.yaml', function (e: any) {
+  fs.copyFileSync('app.yaml', 'www/app.yaml', function (e: any) {
     console.log(e);
     throw e;
   })
