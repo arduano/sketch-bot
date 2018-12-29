@@ -42,7 +42,7 @@ async function serverBuild(cb: any) {
 }
 
 async function serverStart(cb: any) {
-  await pRun('cd www && npm start')
+  await pRun('cd www && node server.js')
 }
 
 async function clientBuild(cb: any) {
