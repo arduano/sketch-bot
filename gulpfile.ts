@@ -1,6 +1,6 @@
 const gulp = require('gulp');
 const join = require('async-child-process').join;
-//const fs = require('fs');
+const fs = require('fs');
 const exec = require('child_process');
 
 async function pRun(command: any) {
@@ -23,18 +23,18 @@ async function pRun(command: any) {
 
 async function serverBuild(cb: any) {
   await pRun('cd Server && tsc')
-  await pRun('copy package.json www\\package.json')
-  await pRun('copy settings.json www\\settings.json')
-  // fs.unlinkSync('www\\package.json')
-  // fs.unlinkSync('www\\settings.json')
-  // fs.copyFile('package.json', 'www\\package.json', function (e) {
-  //   console.log(e);
-  //   throw e;
-  // })
-  // fs.copyFile('settings.json', 'www\\settings.json', function (e) {
-  //   console.log(e);
-  //   throw e;
-  // })
+  //await pRun('copy package.json www\\package.json')
+  //await pRun('copy settings.json www\\settings.json')
+  fs.unlinkSync('www\\package.json')
+  fs.unlinkSync('www\\settings.json')
+  fs.copyFileSync('package.json', 'www\\package.json', function (e: any) {
+    console.log(e);
+    throw e;
+  })
+  fs.copyFileSync('settings.json', 'www\\settings.json', function (e: any) {
+    console.log(e);
+    throw e;
+  })
   await pRun('cd www && npm install')
 }
 
