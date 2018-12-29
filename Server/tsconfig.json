@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "umd",
+        "moduleResolution": "node",
+        "jsx": "react",
+        "strict": true,
+        "alwaysStrict": true,
+        "outDir": "../www/",
+        "sourceMap": false,
+        "lib": [
+            "es2018",
+            "dom"
+        ]
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.tsx"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+}

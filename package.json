@@ -1,0 +1,26 @@
+{
+  "name": "sketchbot-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "express": "^4.16.4",
+    "fs": "0.0.1-security",
+    "http": "0.0.0"
+  },
+  "devDependencies": {
+    "child_process": "^1.0.2",
+    "@types/node": "^10.12.18",
+    "gulp": "^4.0.0",
+    "async-child-process": "^1.1.1",
+    "gulp-typescript": "^5.0.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  }
+}
