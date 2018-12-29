@@ -30,11 +30,11 @@ async function serverBuild(cb: any) {
     fs.unlinkSync('www\\settings.json')
   }
   catch{}
-  fs.copyFileSync('package.json', 'www\\package.json', function (e: any) {
+  fs.copyFileSync('package.json', 'www/package.json', function (e: any) {
     console.log(e);
     throw e;
   })
-  fs.copyFileSync('settings.json', 'www\\settings.json', function (e: any) {
+  fs.copyFileSync('settings.json', 'www/settings.json', function (e: any) {
     console.log(e);
     throw e;
   })
