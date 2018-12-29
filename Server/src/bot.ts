@@ -5,7 +5,9 @@ import * as path from 'path';
 export class DiscordBot {
     private client = new Discord.Client();
     public webapi: WebApi = new WebApi();
-	public start(token: string, port: number): void {
+    public baseUrl = "";
+	public start(token: string, baseUrl: string, port: number): void {
+        this.baseUrl = baseUrl;
         this.webapi.express.listen(port)
 		console.log('Starting bot...');
 		this.client.on('ready', () => {
@@ -14,6 +16,11 @@ export class DiscordBot {
 			this.client.user.setActivity('testing');
 		});
 
+        this.client.on('message', (message) => {
+            if(message.content.startsWith('/sketch')){
+                message.channel.send(baseUrl + "sketch/" + message.guild.id + '/' + message.channel.id);
+            }
+        })
 		this.client.login(token);
 	}
 }

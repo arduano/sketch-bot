@@ -3,15 +3,19 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { SketchPageComponent } from './pages/sketch-page/sketch-page.component';
+import { StorageServiceModule } from 'angular-webstorage-service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SketchPageComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    StorageServiceModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

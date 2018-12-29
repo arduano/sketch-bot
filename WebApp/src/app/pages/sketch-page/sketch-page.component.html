@@ -1,0 +1,7 @@
+<p>
+  sketch-page works!
+</p>
+<button (click)="sendToVerify()">Verify</button>
+<button (click)="logOut()">Log Out</button>
+<br>
+<div class="pfp" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + getPfpUrl() + ')' }"></div>

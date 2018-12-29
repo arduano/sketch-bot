@@ -1,5 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { WebApiService } from './shared/web-api.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { stringify } from '@angular/core/src/util';
 
 @Component({
   selector: 'app-root',
@@ -7,15 +9,16 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  lastResponse = "";
-  text: string = "";
-  @ViewChild('asdf') asdf: ElementRef;
-  constructor(private http: HttpClient){
-
-  }
-  send(){
-    this.http.get('/api/' + this.asdf.nativeElement.value).subscribe((r: any) => {
-      this.lastResponse = r.id
+  constructor(private webapi: WebApiService, private route: ActivatedRoute, private router: Router) {
+    this.route.queryParams.subscribe(async (params) => {
+      let code = params['code']
+      let state: string = params['state']
+      if (code != null) {
+        let response = await this.webapi.requestToken(code);
+        console.log(response);
+        let ids = state.split('x');
+        this.router.navigate(['sketch/' + ids[0] + '/' + ids[1]]);
+      }
     })
   }
 }
