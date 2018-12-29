@@ -63,9 +63,18 @@ gulp.task('server', async function (cb: any) {
 gulp.task('build', async function (cb: any) {
   await clientBuild(cb)
   await serverBuild(cb)
+})
+
+gulp.task('build-run', async function (cb: any) {
+  await clientBuild(cb)
+  await serverBuild(cb)
   await serverStart(cb)
 })
 
 gulp.task('ng', async function(cb: any){
   await pRun('cd WebApp && ng serve')
+})
+
+gulp.task('install', async function(cb: any){
+  await pRun('npm install -g typescript @angular/cli')
 })
