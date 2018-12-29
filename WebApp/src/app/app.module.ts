@@ -4,7 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SketchPageComponent } from './pages/sketch-page/sketch-page.component';
-import { StorageServiceModule } from 'angular-webstorage-service';
 
 @NgModule({
   declarations: [
@@ -14,8 +13,7 @@ import { StorageServiceModule } from 'angular-webstorage-service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
-    StorageServiceModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
