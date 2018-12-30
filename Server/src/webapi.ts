@@ -26,6 +26,12 @@ export class WebApi {
     constructor(discordBot: DiscordBot) {
         this.discordBot = discordBot;
         this.express = express()
+        this.express.use(bodyParser.json());
+        this.express.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+            extended: true,
+            parameterLimit: 1000000,
+            limit: '20mb'
+        }));
         this.mountRoutes()
     }
 
@@ -68,6 +74,10 @@ export class WebApi {
             }
             res.json(data);
         })
+        router.post('/api/post/:gid/:cid', (req, res) => {
+            this.discordBot.sendImage(req.body.image, req.body.user, req.params.gid, req.params.cid)
+            res.status(200).send('Sent');
+        })
         router.get('**', (req, res) => {
             if (fs.existsSync(path.join(__dirname, req.url))) {
                 res.sendFile(path.join(__dirname, req.url))
@@ -76,8 +86,6 @@ export class WebApi {
                 res.sendFile('index.html', { root: __dirname })
             }
         })
-        this.express.use(express.json())
         this.express.use('/', router)
-
     }
 }

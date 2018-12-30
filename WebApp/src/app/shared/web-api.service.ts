@@ -23,22 +23,22 @@ export class WebApiService {
     localStorage.removeItem('refresh_token')
   }
 
-  refreshToken(){
+  refreshToken() {
 
   }
 
   requestToken(code: string) {
     console.log('REQUESTING TOKEN');
-    
+
     let url = this.baseUrl + 'api/get-token/' + code
     return this.http.get(url)
-    .toPromise().then((a: any) => {
-       localStorage.setItem('access_token', a.access_token)
-       localStorage.setItem('expires_in', a.expires_in)
-       localStorage.setItem('refresh_token', a.refresh_token)
-      console.log(a);
-      return a;
-    })
+      .toPromise().then((a: any) => {
+        localStorage.setItem('access_token', a.access_token)
+        localStorage.setItem('expires_in', a.expires_in)
+        localStorage.setItem('refresh_token', a.refresh_token)
+        console.log(a);
+        return a;
+      })
   }
 
   getMe(token: string) {
@@ -49,7 +49,14 @@ export class WebApiService {
     }).toPromise().catch(() => null)
   }
 
-  getGuildChannel(gid: string, cid: string){
-    return this.http.get(this.baseUrl+ 'api/get-channel-data/' + gid + '/' + cid).toPromise().catch(() => null)
+  getGuildChannel(gid: string, cid: string) {
+    return this.http.get(this.baseUrl + 'api/get-channel-data/' + gid + '/' + cid).toPromise().catch(() => null)
+  }
+
+  async postImage(data, uid, gid: string, cid: string) {
+    let url = this.baseUrl + 'api/post/' + gid + '/' + cid
+    return await this.http.post(url, { image: data, user: uid }).toPromise()
+    .then(() => true)
+    .catch(() => false)
   }
 }

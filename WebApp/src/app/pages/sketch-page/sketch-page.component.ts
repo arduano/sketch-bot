@@ -1,6 +1,7 @@
 import { WebApiService } from './../../shared/web-api.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { userInfo } from 'os';
 
 @Component({
   selector: 'app-sketch-page',
@@ -53,5 +54,10 @@ export class SketchPageComponent implements OnInit {
     let channelDetails = await this.webapi.getGuildChannel(this.gid, this.cid);
     if (channelDetails != null) this.channelDetails = channelDetails;
     else this.lastError = "Couldn't find channel";
+  }
+
+  async submitData(data){
+    if(this.user != null)
+    this.webapi.postImage(data, this.user.id, this.gid, this.cid)
   }
 }

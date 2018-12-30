@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+declare var require: any;
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { fromEvent } from 'rxjs';
-import { switchMap, takeUntil, pairwise, take, buffer } from 'rxjs/operators'
-import { TouchSequence } from 'selenium-webdriver';
-declare var require: any
+import { switchMap, takeUntil, pairwise, take, buffer } from 'rxjs/operators';
 const Beizer = require('bezier-js')
 
 @Component({
@@ -13,8 +12,10 @@ const Beizer = require('bezier-js')
 export class CanvasComponent implements OnInit {
   @ViewChild('canvas') public canvas: ElementRef;
 
-  @Input() public width = 800;
-  @Input() public height = 800;
+  @Output() submit: EventEmitter<string> = new EventEmitter<string>();
+
+  @Input() public width = 100;
+  @Input() public height = 100;
 
   private prevEvents: MouseEvent[] = [];
   private prevBeizer = null;
@@ -25,13 +26,13 @@ export class CanvasComponent implements OnInit {
 
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
     this.cx = canvasEl.getContext('2d');
-
+    
     canvasEl.width = this.width;
     canvasEl.height = this.height;
 
     this.cx.lineWidth = 3;
     this.cx.lineCap = 'round';
-    this.cx.strokeStyle = '#000';
+    this.cx.strokeStyle = '#67717a';
 
     this.captureEvents(canvasEl);
   }
@@ -97,4 +98,9 @@ export class CanvasComponent implements OnInit {
     }
   }
 
+  sendImage(){
+    let data = this.canvas.nativeElement.toDataURL();
+    this.submit.emit(data);
+    //console.log(data);
+  }
 }

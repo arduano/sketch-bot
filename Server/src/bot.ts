@@ -1,6 +1,7 @@
 import { WebApi } from './webapi';
 import * as Discord from 'discord.js';
 import * as path from 'path';
+import { Stream, Readable } from 'stream';
 
 export class DiscordBot {
     private client = new Discord.Client();
@@ -8,7 +9,7 @@ export class DiscordBot {
     public baseUrl = "";
     public started = false;
 
-    constructor(){
+    constructor() {
         this.webapi = new WebApi(this);
     }
 
@@ -34,7 +35,7 @@ export class DiscordBot {
         this.client.login(token);
     }
 
-    public confirmChannel(gid: string, cid: string){
+    public confirmChannel(gid: string, cid: string) {
         let data: any = {};
         let guild = this.client.guilds.get(gid);
         if (guild == null) { return null; }
@@ -44,5 +45,21 @@ export class DiscordBot {
         data.guildIconUrl = guild.iconURL;
         data.channelName = channel.name;
         return data;
+    }
+
+    public sendImage(data, uid, gid, cid) {
+        let guild = this.client.guilds.get(gid);
+        if (guild == null) { return null; }
+        let channel = guild.channels.get(cid) as Discord.TextChannel;
+        if (channel == null) { return null; }
+        let user = this.client.fetchUser(uid);
+        if (channel == null) { return null; }
+        let buffer = Buffer.from(data.replace("data:image/png;base64,", ""), "base64");
+        //let s = new Readable();
+        //s.push(data);
+        //s.push(null);
+        channel.send("",
+            new Discord.Attachment(buffer, 'image.png')
+        );
     }
 }
