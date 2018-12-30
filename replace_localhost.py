@@ -1,6 +1,6 @@
 import os
-new = 'sketch-bot.appspot.com'
-orig = 'localhost:8080'
+new = 'https://sketch-bot.appspot.com'
+orig = 'http://localhost:8080'
 
 for root, _, files in os.walk('www'):
     for _f in files:
