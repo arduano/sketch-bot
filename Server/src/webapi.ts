@@ -3,11 +3,15 @@ import { fileURLToPath } from 'url';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Observable } from 'rxjs';
+import { DiscordBot } from './bot';
 
 export class WebApi {
     public express: express.Express;
 
-    constructor() {
+    public discordBot: DiscordBot;
+
+    constructor(discordBot: DiscordBot) {
+        this.discordBot = discordBot;
         this.express = express()
         this.mountRoutes()
     }
@@ -26,6 +30,13 @@ export class WebApi {
         })
         router.get('/api/:id', (req, res) => {
             res.json({ id: req.params.id });
+        })
+        router.get('/api/get-channel-data/:gid/:cid', (req, res) => {
+            let data = this.discordBot.confirmChannel(req.params.gid, req.params.cid)
+            if(data == null){
+                res.status(400).send('Invlaid guild/channel')
+            }
+            res.json(data);
         })
         router.get('**', (req, res) => {
             if (fs.existsSync(path.join(__dirname, req.url))) {

@@ -7,6 +7,8 @@ import { Injectable } from '@angular/core';
 export class WebApiService {
   private redirect = 'https://sketch-bot.appspot.com/';
   private discordApi = 'https://discordapp.com/api/v6/';
+  //private baseUrl = 'https://sketch-bot.appspot.com/';
+  private baseUrl = 'http://localhost:8080/';
 
   constructor(private http: HttpClient) { }
 
@@ -61,5 +63,9 @@ export class WebApiService {
         'Authorization': 'Bearer ' + token
       }
     }).toPromise().catch(() => null)
+  }
+
+  getGuildChannel(gid: string, cid: string){
+    return this.http.get(this.baseUrl+ 'api/get-channel-data/' + gid + '/' + cid).toPromise().catch(() => null)
   }
 }
