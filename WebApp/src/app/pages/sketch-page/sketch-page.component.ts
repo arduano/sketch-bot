@@ -1,7 +1,6 @@
 import { WebApiService } from './../../shared/web-api.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { userInfo } from 'os';
 
 @Component({
   selector: 'app-sketch-page',

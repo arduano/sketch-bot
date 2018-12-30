@@ -1,7 +1,7 @@
-declare var require: any;
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { switchMap, takeUntil, pairwise, take, buffer } from 'rxjs/operators';
+declare var require: any;
 const Beizer = require('bezier-js')
 
 @Component({
