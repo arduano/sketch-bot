@@ -77,4 +77,10 @@ gulp.task('ng', async function(cb: any){
 
 gulp.task('install', async function(cb: any){
   await pRun('npm install -g typescript @angular/cli')
+  await pRun('cd WebApp && npm install')
+  await pRun('cd Server && npm install')
+})
+
+gulp.task('replace', async function(cb: any){
+  await pRun('python replace_localhost.py')
 })
