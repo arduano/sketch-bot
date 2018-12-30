@@ -14,8 +14,8 @@ export class CanvasComponent implements OnInit {
 
   @Output() submit: EventEmitter<string> = new EventEmitter<string>();
 
-  @Input() public width = 100;
-  @Input() public height = 100;
+  @Input() public width = 800;
+  @Input() public height = 800;
 
   private prevEvents: MouseEvent[] = [];
   private prevBeizer = null;

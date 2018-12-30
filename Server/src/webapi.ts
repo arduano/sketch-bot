@@ -26,11 +26,13 @@ export class WebApi {
     constructor(discordBot: DiscordBot) {
         this.discordBot = discordBot;
         this.express = express()
-        this.express.use(bodyParser.json());
-        this.express.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+        this.express.use(bodyParser.json({
+            limit: '5000mb'
+        }));
+        this.express.use(bodyParser.urlencoded({
             extended: true,
-            parameterLimit: 1000000,
-            limit: '20mb'
+            limit: '5000mb', 
+            parameterLimit:10000000000
         }));
         this.mountRoutes()
     }
