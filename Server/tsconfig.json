@@ -4,8 +4,6 @@
         "module": "umd",
         "moduleResolution": "node",
         "jsx": "react",
-        "strict": true,
-        "alwaysStrict": true,
         "outDir": "../www/",
         "sourceMap": false,
         "lib": [

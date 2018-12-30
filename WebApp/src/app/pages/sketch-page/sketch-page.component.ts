@@ -28,7 +28,7 @@ export class SketchPageComponent implements OnInit {
     })
     let token = this.webapi.getToken();
     if (token == null) {
-      this.sendToVerify()
+      //this.sendToVerify()
     }
     this.getUser()
     this.getChannelData()
