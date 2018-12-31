@@ -43,12 +43,12 @@ export class CanvasComponent implements OnInit {
     canvasEl.width = this.width;
     canvasEl.height = this.height;
 
-    this.fixCanvasStroke()
-
+    
     this.captureEvents(canvasEl);
     window.onmouseup = () => { this.draggingResize = false }
     window.onmousemove = (a) => { this.dragResize(a) }
     this.fixCanvasWidth()
+    this.fixCanvasStroke()
   }
 
   fixCanvasWidth(){
@@ -56,7 +56,7 @@ export class CanvasComponent implements OnInit {
     if (size[0] < 100) size[0] = 100;
     if (size[1] < 100) size[1] = 100;
     if (size[0] > window.innerWidth - 50) size[0] = window.innerWidth - 50;
-    if (size[1] > window.innerHeight - 50) size[1] = window.innerHeight - 50;
+    if (size[1] > window.innerHeight - 200) size[1] = window.innerHeight - 200;
     resizeCanvas({
       canvas: this.canvas.nativeElement,
       diff: [size[0] - this.canvas.nativeElement.width, size[1] - this.canvas.nativeElement.height],
@@ -80,14 +80,15 @@ export class CanvasComponent implements OnInit {
 
   dragResize($event) {
     if (this.draggingResize) {
+      $event.preventDefault()
       let drag;
       if ($event instanceof TouchEvent) drag = [$event.touches[0].clientX - this.resizeDragStartPos[0], $event.touches[0].clientY - this.resizeDragStartPos[1]];
       else drag = [$event.clientX - this.resizeDragStartPos[0], $event.clientY - this.resizeDragStartPos[1]];
       let size = [this.resizeDragCanvasStartSize[0] + drag[0] * 2, this.resizeDragCanvasStartSize[1] + drag[1] * 2]
       if (size[0] < 100) size[0] = 100;
       if (size[1] < 100) size[1] = 100;
-      if (size[0] > window.innerWidth - 100) size[0] = window.innerWidth - 100;
-      if (size[1] > window.innerHeight - 100) size[1] = window.innerHeight - 100;
+      if (size[0] > window.innerWidth - 50) size[0] = window.innerWidth - 50;
+      if (size[1] > window.innerHeight - 200) size[1] = window.innerHeight - 200;
       resizeCanvas({
         canvas: this.canvas.nativeElement,
         diff: [size[0] - this.canvas.nativeElement.width, size[1] - this.canvas.nativeElement.height],
@@ -99,6 +100,7 @@ export class CanvasComponent implements OnInit {
 
   captureEvents(canvasEl: HTMLCanvasElement) {
     var move = (res: MouseEvent | TouchEvent) => {
+      res.preventDefault();
       let pos = { x: 0, y: 0 };
       if (res instanceof TouchEvent) {
         pos.x = res.touches[0].clientX;
