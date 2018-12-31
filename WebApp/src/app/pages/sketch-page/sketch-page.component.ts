@@ -4,13 +4,17 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter }
 import { fromEvent } from 'rxjs';
 import { switchMap, takeUntil, pairwise, take, buffer, max } from 'rxjs/operators';
 import resizeCanvas from 'resize-canvas'
+import { paletteTransition } from './sketch-page.animations';
 declare var require: any;
 const Beizer = require('bezier-js')
 
 @Component({
   selector: 'app-sketch-page',
   templateUrl: './sketch-page.component.html',
-  styleUrls: ['./sketch-page.component.less']
+  styleUrls: ['./sketch-page.component.less'],
+  animations: [
+    paletteTransition
+  ]
 })
 export class SketchPageComponent implements OnInit {
   @ViewChild('canvas') public canvas: ElementRef;
@@ -18,20 +22,30 @@ export class SketchPageComponent implements OnInit {
   @ViewChild('user_section') public user_section: ElementRef;
   @ViewChild('header') public header: ElementRef;
 
-  @Output() submit: EventEmitter<string> = new EventEmitter<string>();
-
-  @Input() public width = 400;
+  @Input() public width = 600;
   @Input() public height = 400;
 
   public headerWrapped = false;
-  checkWrapped(){
+  checkWrapped() {
     this.headerWrapped = this.user_section.nativeElement.clientWidth + this.server_section.nativeElement.clientWidth >= this.header.nativeElement.clientWidth
   }
 
   public colors: string[] = [
     '#67717a',
     '#000000',
-    '#FFFFFF'
+    '#FFFFFF',
+    '#FF0000',
+    '#800000',
+    '#FFFF00',
+    '#808000',
+    '#00FF00',
+    '#008000',
+    '#00FFFF',
+    '#008080',
+    '#0000FF',
+    '#000080',
+    '#FF00FF',
+    '#800080',
   ]
 
   private prevEvents: { x: number, y: number }[] = [];
@@ -56,6 +70,8 @@ export class SketchPageComponent implements OnInit {
   public pfpUrl = "";
   public username = "";
 
+  public paletteShown = false;
+
   constructor(private webapi: WebApiService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
@@ -68,7 +84,12 @@ export class SketchPageComponent implements OnInit {
       this.sendToVerify()
     }
     this.getUser().then(() =>
-      this.getChannelData().catch(e => this.lastError = e.error)
+      this.getChannelData().catch(e => {
+        this.lastError = e.error;
+        if (e.status == 0){
+          this.lastError = "Connection error";
+        }
+      })
     ).catch(() => null)
 
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
@@ -77,7 +98,7 @@ export class SketchPageComponent implements OnInit {
     canvasEl.width = this.width;
     canvasEl.height = this.height;
 
-    
+
     this.captureEvents(canvasEl);
     window.onmouseup = () => { this.draggingResize = false }
     window.onmousemove = (a) => { this.dragResize(a) }
@@ -86,11 +107,11 @@ export class SketchPageComponent implements OnInit {
   }
 
   public minWidth = 0;
-  setMinWidth(){
+  setMinWidth() {
     this.minWidth = Math.max(this.user_section.nativeElement.clientWidth, this.server_section.nativeElement.clientWidth)
   }
 
-  fixCanvasWidth(){
+  fixCanvasWidth() {
     this.setMinWidth()
     let size = [this.canvas.nativeElement.width, this.canvas.nativeElement.height]
     if (size[0] > window.innerWidth - 50) size[0] = window.innerWidth - 50;
@@ -98,10 +119,10 @@ export class SketchPageComponent implements OnInit {
     resizeCanvas({
       canvas: this.canvas.nativeElement,
       diff: [size[0] - this.canvas.nativeElement.width, size[1] - this.canvas.nativeElement.height],
-      from: [this.canvas.nativeElement.width / 2, this.canvas.nativeElement.height / 2]
+      from: [0, 0]//[this.canvas.nativeElement.width / 2, this.canvas.nativeElement.height / 2]
     })
     this.checkWrapped()
-}
+  }
 
   public canvasStroke = { lineWidth: 3, lineCap: 'round', strokeStyle: '#67717a' }
   fixCanvasStroke() {
@@ -110,10 +131,10 @@ export class SketchPageComponent implements OnInit {
     this.cx.strokeStyle = this.canvasStroke.strokeStyle;
   }
 
-  changeColor(c){
+  changeColor(c) {
     console.log(c);
-    
-    this.canvasStroke.strokeStyle = c; 
+
+    this.canvasStroke.strokeStyle = c;
     this.fixCanvasStroke()
   }
 
@@ -141,7 +162,7 @@ export class SketchPageComponent implements OnInit {
       resizeCanvas({
         canvas: this.canvas.nativeElement,
         diff: [size[0] - this.canvas.nativeElement.width, size[1] - this.canvas.nativeElement.height],
-        from: [this.canvas.nativeElement.width / 2, this.canvas.nativeElement.height / 2]
+        from: [0, 0]//[this.canvas.nativeElement.width / 2, this.canvas.nativeElement.height / 2]
       })
       this.fixCanvasStroke()
       this.checkWrapped()
@@ -260,5 +281,6 @@ export class SketchPageComponent implements OnInit {
     let channelDetails = await this.webapi.getGuildChannel(this.gid, this.cid, this.user.id);
     if (channelDetails != null) this.channelDetails = channelDetails;
     else this.lastError = "Couldn't find channel";
+    this.checkWrapped()
   }
 }

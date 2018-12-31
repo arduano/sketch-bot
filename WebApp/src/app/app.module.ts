@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SketchPageComponent } from './pages/sketch-page/sketch-page.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { SketchPageComponent } from './pages/sketch-page/sketch-page.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    BrowserAnimationsModule, 
     HttpClientModule
   ],
   providers: [],

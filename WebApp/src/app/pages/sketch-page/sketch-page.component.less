@@ -7,22 +7,6 @@ div, img, h3, button, p {
     user-select: none;
 }
 
-.error-overlay{
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    top:0;
-    left:0;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 30px;
-    color: red;
-}
-
 .container {
     display: flex;
     flex-direction: column;
@@ -136,9 +120,8 @@ button {
     user-select: none;
 }
 
-.palette-container{
+.tools-container{
     margin-top: 10px;
-    height: 20px;
 }
 
 .colors{
@@ -149,5 +132,35 @@ button {
 .color{
     width:20px;
     height:20px;
+    cursor: pointer;
 }
 
+.overlay{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    top:0;
+    left:0;
+}
+
+.error-overlay{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    color: red;
+}
+
+.palette-overlay{
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.tools-button.palette-tool{
+    width: 40px;
+    height:40px;
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
