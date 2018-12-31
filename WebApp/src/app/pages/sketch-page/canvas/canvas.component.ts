@@ -64,7 +64,7 @@ export class CanvasComponent implements OnInit {
     this.draggingResize = true;
   }
 
-  private dragResize($event) {
+  dragResize($event) {
     if (this.draggingResize) {
       let drag;
       if ($event instanceof TouchEvent) drag = [$event.touches[0].clientX - this.resizeDragStartPos[0], $event.touches[0].clientY - this.resizeDragStartPos[1]];
@@ -83,7 +83,7 @@ export class CanvasComponent implements OnInit {
     }
   }
 
-  private captureEvents(canvasEl: HTMLCanvasElement) {
+  captureEvents(canvasEl: HTMLCanvasElement) {
     var move = (res: MouseEvent | TouchEvent) => {
       let pos = { x: 0, y: 0 };
       if (res instanceof TouchEvent) {
@@ -154,7 +154,7 @@ export class CanvasComponent implements OnInit {
     //fromEvent(document.body, 'mouseleave').subscribe(() => this.prevEvents = []; this.prevBeizer = null;)
   }
 
-  private drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
+  drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
     if (!this.cx) { return; }
 
     this.cx.beginPath();
