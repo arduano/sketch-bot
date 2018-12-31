@@ -46,17 +46,17 @@ export class WebApiService {
       headers: {
         'Authorization': 'Bearer ' + token
       }
-    }).toPromise().catch(() => null)
+    }).toPromise()
   }
 
-  getGuildChannel(gid: string, cid: string) {
-    return this.http.get(this.baseUrl + 'api/get-channel-data/' + gid + '/' + cid).toPromise().catch(() => null)
+  getGuildChannel(gid: string, cid: string, uid: string) {
+    return this.http.get(this.baseUrl + 'api/get-channel-data/' + gid + '/' + cid + '/' + uid).toPromise()
   }
 
   async postImage(data, uid, gid: string, cid: string) {
     let url = this.baseUrl + 'api/post/' + gid + '/' + cid
     return await this.http.post(url, { image: data, user: uid }).toPromise()
-    .then(() => true)
-    .catch(() => false)
+      .then(() => true)
+      .catch(() => false)
   }
 }

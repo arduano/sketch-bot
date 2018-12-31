@@ -29,8 +29,9 @@ export class SketchPageComponent implements OnInit {
     if (token == null) {
       this.sendToVerify()
     }
-    this.getUser()
-    this.getChannelData()
+    this.getUser().then(() =>
+      this.getChannelData().catch(e => this.lastError = e.error)
+    ).catch(() => null)
   }
 
   sendToVerify() {
@@ -40,7 +41,7 @@ export class SketchPageComponent implements OnInit {
 
   async getUser() {
     let token = this.webapi.getToken();
-    let user = await this.webapi.getMe(token);
+    let user: any = await this.webapi.getMe(token);
     this.user = user;
     this.pfpUrl = 'https://cdn.discordapp.com/avatars/' + this.user.id + '/' + this.user.avatar + '.png'
     this.username = user.username;
@@ -51,13 +52,13 @@ export class SketchPageComponent implements OnInit {
   }
 
   async getChannelData() {
-    let channelDetails = await this.webapi.getGuildChannel(this.gid, this.cid);
+    let channelDetails = await this.webapi.getGuildChannel(this.gid, this.cid, this.user.id);
     if (channelDetails != null) this.channelDetails = channelDetails;
     else this.lastError = "Couldn't find channel";
   }
 
-  async submitData(data){
-    if(this.user != null)
-    this.webapi.postImage(data, this.user.id, this.gid, this.cid)
+  async submitData(data) {
+    if (this.user != null)
+      this.webapi.postImage(data, this.user.id, this.gid, this.cid)
   }
 }

@@ -4,6 +4,9 @@
 [iconUrl]="channelDetails.guildIconUrl"
 [channel]="channelDetails.channelName"
 ></app-canvas>
+<div *ngIf="lastError != ''" class="error-overlay">
+  {{lastError}}
+</div>
 <!--<p>
   sketch-page works!
 </p>

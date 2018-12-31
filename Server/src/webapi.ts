@@ -71,8 +71,9 @@ export class WebApi {
         })
         router.get('/api/get-channel-data/:gid/:cid/:uid', async (req, res) => {
             let data = await this.discordBot.confirmChannel(req.params.gid, req.params.cid, req.params.uid)
-            if (data instanceof String) {
+            if (typeof(data) == "string") {
                 res.status(400).send(data)
+                return;
             }
             res.json(data);
         })
