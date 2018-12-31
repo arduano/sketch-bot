@@ -76,8 +76,8 @@ export class WebApi {
             }
             res.json(data);
         })
-        router.post('/api/post/:gid/:cid', (req, res) => {
-            this.discordBot.sendImage(req.body.image, req.body.user, req.params.gid, req.params.cid)
+        router.post('/api/post/:gid/:cid', async (req, res) => {
+            await this.discordBot.sendImage(req.body.image, req.body.user, req.params.gid, req.params.cid)
             res.status(200).send('Sent');
         })
         router.get('**', (req, res) => {

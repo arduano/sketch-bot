@@ -15,11 +15,10 @@ export class SketchPageComponent implements OnInit {
 
   public lastError = "";
 
-  constructor(private webapi: WebApiService, private route: ActivatedRoute, private router: Router) { }
+  public pfpUrl = "";
+  public username = "";
 
-  getPfpUrl() {
-    return 'https://cdn.discordapp.com/avatars/' + this.user.id + '/' + this.user.avatar + '.png'
-  }
+  constructor(private webapi: WebApiService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
@@ -43,6 +42,8 @@ export class SketchPageComponent implements OnInit {
     let token = this.webapi.getToken();
     let user = await this.webapi.getMe(token);
     this.user = user;
+    this.pfpUrl = 'https://cdn.discordapp.com/avatars/' + this.user.id + '/' + this.user.avatar + '.png'
+    this.username = user.username;
   }
 
   logOut() {

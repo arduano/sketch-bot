@@ -47,18 +47,15 @@ export class DiscordBot {
         return data;
     }
 
-    public sendImage(data, uid, gid, cid) {
+    public async sendImage(data, uid, gid, cid) {
         let guild = this.client.guilds.get(gid);
         if (guild == null) { return null; }
         let channel = guild.channels.get(cid) as Discord.TextChannel;
         if (channel == null) { return null; }
-        let user = this.client.fetchUser(uid);
+        let user = await this.client.fetchUser(uid);
         if (channel == null) { return null; }
         let buffer = Buffer.from(data.replace("data:image/png;base64,", ""), "base64");
-        //let s = new Readable();
-        //s.push(data);
-        //s.push(null);
-        channel.send("",
+        channel.send(user.username + '#' + user.discriminator + ' drew:',
             new Discord.Attachment(buffer, 'image.png')
         );
     }

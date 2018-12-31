@@ -1,5 +1,10 @@
-<app-canvas (submit)="submitData($event)"></app-canvas>
-<p>
+<app-canvas (submit)="submitData($event)" 
+[pfpUrl]="pfpUrl" 
+[user]="username" 
+[iconUrl]="channelDetails.guildIconUrl"
+[channel]="channelDetails.channelName"
+></app-canvas>
+<!--<p>
   sketch-page works!
 </p>
 <h3>{{lastError}}</h3>
@@ -10,4 +15,4 @@
 <button (click)="sendToVerify()">Verify</button>
 <button (click)="logOut()">Log Out</button>
 <br>
-<div class="pfp" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + getPfpUrl() + ')' }"></div>
+<div class="pfp" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + getPfpUrl() + ')' }"></div>-->

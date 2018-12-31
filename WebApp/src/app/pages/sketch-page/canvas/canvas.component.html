@@ -1,6 +1,32 @@
-<div>
-  <canvas #canvas>
-
-  </canvas>
+<div class="container">
+  <div class="resizer" [ngStyle]="{'width.px': canvas.width + 2}">
+    <div #header class="header">
+      <div class="user-section">
+        <div class="pfp" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + pfpUrl + ')' }"></div>
+        <div>{{user}}</div>
+      </div>
+      <div class="spacer-section">
+      </div>
+      <div class="server-section">
+        <div>{{'#' + channel}}</div>
+        <div class="icon" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + iconUrl + ')' }"></div>
+      </div>
+    </div>
+    <!--<div class="alearts error" [ngStyle]="{'height.px': header.clientHeight,'margin-top.px': -header.clientHeight}">
+      <div>{{persistentErrorText}}</div>
+    </div>
+    <div class="alearts error" [ngStyle]="{'height.px': header.clientHeight,'margin-top.px': -header.clientHeight}">
+      <div>{{temporaryErrorText}}</div>
+    </div>
+    <div class="alearts success" [ngStyle]="{'height.px': header.clientHeight,'margin-top.px': -header.clientHeight}">
+      <div>{{successText}}</div>
+    </div>-->
+    <div class="canvas-bg">
+      <canvas #canvas>
+      </canvas>
+    </div>
+  </div>
+  <div class="resize-head" [ngStyle]="{ 'left.px': canvas.width / 2 + 10 }" (mousemove)="dragResize($event)"
+    (mousedown)="resizeStart($event)" (touchmove)="dragResize($event)" (touchstart)="resizeStart($event)"></div>
   <button (click)="sendImage()">Send</button>
 </div>
