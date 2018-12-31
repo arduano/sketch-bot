@@ -69,10 +69,10 @@ export class WebApi {
                 res.status(400).send(r.message)
             })
         })
-        router.get('/api/get-channel-data/:gid/:cid', (req, res) => {
-            let data = this.discordBot.confirmChannel(req.params.gid, req.params.cid)
-            if (data == null) {
-                res.status(400).send('Invlaid guild/channel')
+        router.get('/api/get-channel-data/:gid/:cid/:uid', async (req, res) => {
+            let data = await this.discordBot.confirmChannel(req.params.gid, req.params.cid, req.params.uid)
+            if (data instanceof String) {
+                res.status(400).send(data)
             }
             res.json(data);
         })

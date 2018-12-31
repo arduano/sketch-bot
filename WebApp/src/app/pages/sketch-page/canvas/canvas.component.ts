@@ -22,6 +22,12 @@ export class CanvasComponent implements OnInit {
   @Input() public user = "";
   @Input() public channel = "";
 
+  public colors: string[] = [
+    '#67717a',
+    '#000000',
+    '#FFFFFF'
+  ]
+
   private prevEvents: { x: number, y: number }[] = [];
   private prevBeizer = null;
 
@@ -85,6 +91,8 @@ export class CanvasComponent implements OnInit {
       if ($event instanceof TouchEvent) drag = [$event.touches[0].clientX - this.resizeDragStartPos[0], $event.touches[0].clientY - this.resizeDragStartPos[1]];
       else drag = [$event.clientX - this.resizeDragStartPos[0], $event.clientY - this.resizeDragStartPos[1]];
       let size = [this.resizeDragCanvasStartSize[0] + drag[0] * 2, this.resizeDragCanvasStartSize[1] + drag[1] * 2]
+      size[0] = size[0] - size[0] % 2;
+      size[0] = size[0] - size[0] % 2;
       if (size[0] < 100) size[0] = 100;
       if (size[1] < 100) size[1] = 100;
       if (size[0] > window.innerWidth - 50) size[0] = window.innerWidth - 50;

@@ -35,12 +35,26 @@ export class DiscordBot {
         this.client.login(token);
     }
 
-    public confirmChannel(gid: string, cid: string) {
+    public async confirmChannel(gid: string, cid: string, uid: string) {
         let data: any = {};
         let guild = this.client.guilds.get(gid);
-        if (guild == null) { return null; }
+        if (guild == null) { return 'Invalid server'; }
         let channel = guild.channels.get(cid);
-        if (channel == null) { return null; }
+        if (channel == null) { return 'Invalid channel'; }
+        let user = await this.client.fetchUser(uid);
+        if (user == null) { return 'Invalid user'; }
+        let member;
+        try {
+            member = await guild.fetchMember(user);
+        }
+        catch{ return 'User not in Server'; }
+        if (!(
+            channel.memberPermissions(member).has(Discord.Permissions.FLAGS.VIEW_CHANNEL) &&
+            channel.memberPermissions(member).has(Discord.Permissions.FLAGS.SEND_MESSAGES) &&
+            channel.memberPermissions(member).has(Discord.Permissions.FLAGS.ATTACH_FILES) 
+        )){
+            return 'Invalid user permissions';
+        }
         data.guildName = guild.name;
         data.guildIconUrl = guild.iconURL;
         data.channelName = channel.name;
