@@ -1,9 +1,36 @@
-<app-canvas (submit)="submitData($event)" 
-[pfpUrl]="pfpUrl" 
-[user]="username" 
-[iconUrl]="channelDetails.guildIconUrl"
-[channel]="channelDetails.channelName"
-></app-canvas>
+<div class="container">
+    <div class="resizer">
+      <div #header class="header" [ngClass]="{ 'wrapped': headerWrapped }">
+        <div class="user-section-container">
+          <div #user_section class="user-section">
+            <div class="pfp" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + pfpUrl + ')' }"></div>
+            <div class="username">{{'@' + (user.username.length > 15 ? user.username.slice(0, 15) + '...' : user.username)}}</div>
+          </div>
+        </div>
+        <div class="server-section-container">
+          <div #server_section class="server-section">
+            <div class="channel-name">{{'#' + (channelDetails.channelName.length > 15 ? channelDetails.channelName.slice(0, 15) + '...' : channelDetails.channelName)}}</div>
+            <div class="icon" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + channelDetails.guildIconUrl + ')' }"></div>
+          </div>
+        </div>
+      </div>
+      <div class="canvas-bg">
+        <canvas #canvas>
+        </canvas>
+      </div>
+      <div #pallette class="palette-container">
+        <div class="colors">
+          <div class="color" *ngFor="let c of colors" [ngStyle]="{'background-color': c}" (click)="changeColor(c)"></div>
+        </div>
+        <div class="tools">
+          <div class="tool" *ngFor="let c of colors" [ngStyle]="{'background-color': c}" (click)="changeColor(c)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="resize-head" [ngStyle]="{ 'left.px': canvas.width / 2 + 10, 'top.px': -pallette.offsetHeight - 20 }"
+      (mousemove)="dragResize($event)" (mousedown)="resizeStart($event)" (touchmove)="dragResize($event)" (touchstart)="resizeStart($event)"></div>
+    <button (click)="sendImage()">Send</button>
+  </div>
 <div *ngIf="lastError != ''" class="error-overlay">
   {{lastError}}
 </div>

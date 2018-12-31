@@ -31,8 +31,8 @@ export class WebApi {
         }));
         this.express.use(bodyParser.urlencoded({
             extended: true,
-            limit: '5000mb', 
-            parameterLimit:10000000000
+            limit: '5000mb',
+            parameterLimit: 10000000000
         }));
         this.mountRoutes()
     }
@@ -71,15 +71,16 @@ export class WebApi {
         })
         router.get('/api/get-channel-data/:gid/:cid/:uid', async (req, res) => {
             let data = await this.discordBot.confirmChannel(req.params.gid, req.params.cid, req.params.uid)
-            if (typeof(data) == "string") {
+            if (typeof (data) == "string") {
                 res.status(400).send(data)
                 return;
             }
             res.json(data);
         })
         router.post('/api/post/:gid/:cid', async (req, res) => {
-            await this.discordBot.sendImage(req.body.image, req.body.user, req.params.gid, req.params.cid)
-            res.status(200).send('Sent');
+            let status = await this.discordBot.sendImage(req.body.image, req.body.user, req.params.gid, req.params.cid)
+            if (status == true) res.status(200).send('Sent');
+            else res.status(400).send(status);
         })
         router.get('**', (req, res) => {
             if (fs.existsSync(path.join(__dirname, req.url))) {

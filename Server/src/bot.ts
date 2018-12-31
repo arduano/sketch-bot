@@ -62,6 +62,8 @@ export class DiscordBot {
     }
 
     public async sendImage(data, uid, gid, cid) {
+        let c = await this.confirmChannel(gid, cid, uid);
+        if(typeof(c) == "string") return c;
         let guild = this.client.guilds.get(gid);
         if (guild == null) { return null; }
         let channel = guild.channels.get(cid) as Discord.TextChannel;
@@ -72,5 +74,6 @@ export class DiscordBot {
         channel.send(user.username + '#' + user.discriminator + ' drew:',
             new Discord.Attachment(buffer, 'image.png')
         );
+        return true;
     }
 }
