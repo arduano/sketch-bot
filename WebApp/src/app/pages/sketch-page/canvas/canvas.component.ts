@@ -48,7 +48,21 @@ export class CanvasComponent implements OnInit {
     this.captureEvents(canvasEl);
     window.onmouseup = () => { this.draggingResize = false }
     window.onmousemove = (a) => { this.dragResize(a) }
+    this.fixCanvasWidth()
   }
+
+  fixCanvasWidth(){
+    let size = [this.canvas.nativeElement.width, this.canvas.nativeElement.height]
+    if (size[0] < 100) size[0] = 100;
+    if (size[1] < 100) size[1] = 100;
+    if (size[0] > window.innerWidth - 50) size[0] = window.innerWidth - 50;
+    if (size[1] > window.innerHeight - 50) size[1] = window.innerHeight - 50;
+    resizeCanvas({
+      canvas: this.canvas.nativeElement,
+      diff: [size[0] - this.canvas.nativeElement.width, size[1] - this.canvas.nativeElement.height],
+      from: [this.canvas.nativeElement.width / 2, this.canvas.nativeElement.height / 2]
+    })
+}
 
   public canvasStroke = { lineWidth: 3, lineCap: 'round', strokeStyle: '#67717a' }
   fixCanvasStroke() {
