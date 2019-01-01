@@ -1,17 +1,18 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="container">
   <div class="resizer">
     <div #header class="header" [ngClass]="{ 'wrapped': headerWrapped }">
       <div class="user-section-container">
         <div #user_section class="user-section">
           <div class="pfp" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + pfpUrl + ')' }"></div>
-          <div class="username">{{'@' + (user.username.length > 15 ? user.username.slice(0, 15) + '...' :
+          <div class="username">{{'@' + (user.username.length > 20 ? user.username.slice(0, 20) + '...' :
             user.username)}}</div>
         </div>
       </div>
       <div class="server-section-container">
         <div #server_section class="server-section">
-          <div class="channel-name">{{'#' + (channelDetails.channelName.length > 15 ?
-            channelDetails.channelName.slice(0, 15) + '...' : channelDetails.channelName)}}</div>
+          <div class="channel-name">{{'#' + (channelDetails.channelName.length > 20 ?
+            channelDetails.channelName.slice(0, 20) + '...' : channelDetails.channelName)}}</div>
           <div class="icon" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + channelDetails.guildIconUrl + ')' }"></div>
         </div>
       </div>
@@ -26,13 +27,14 @@
         <div class="tools-button size-tool" (click)="sizesShown = true">
           <div class="size-circle" [ngStyle]="{'width.px': canvasStroke.lineWidth, 'height.px': canvasStroke.lineWidth, 'background-color': canvasStroke.strokeStyle}"></div>
         </div>
-        <div class="tools-button pen-tool" (click)="selectedTool = 'pen'" [ngClass]="{'selected': selectedTool == 'pen'}">pen</div>
-        <div class="tools-button eraser-tool" (click)="selectedTool = 'eraser'" [ngClass]="{'selected': selectedTool == 'eraser'}">eraser</div>
+        <div class="tools-button pen-tool" (click)="selectedTool = 'pen'" [ngClass]="{'selected': selectedTool == 'pen'}">edit</div>
+        <div class="tools-button eraser-tool" (click)="selectedTool = 'eraser'" [ngClass]="{'selected': selectedTool == 'eraser'}">backspace</div>
+        <div class="tools-button clear-tool" (click)="selectedTool = 'clear'" [ngClass]="{'selected': selectedTool == 'clear'}">clear</div>
+        <button mat-raised-button (click)="sendImage()" color="primary"><i class="material-icons" style="font-size:20px;">send</i> &nbsp;&nbsp;Send</button>
       </div>
     </div>
   </div>
   <div #resize_head class="resize-head" [ngStyle]="{ 'left.px': canvas.width / 2 + 10, 'top.px': -tools.offsetHeight - 20 }"></div>
-  <button (click)="sendImage()">Send</button>
 </div>
 <div *ngIf="lastError != ''" class="error-overlay overlay">
   {{lastError}}

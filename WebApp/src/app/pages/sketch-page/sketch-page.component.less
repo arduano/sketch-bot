@@ -1,3 +1,5 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
 div, img, h3, button, p {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -19,15 +21,17 @@ div, img, h3, button, p {
 }
 
 canvas {
-    border: 1px solid #000;
+    border: 1px solid #ffffff20;
     border-radius: 3px;
     margin-bottom: -4px;
     position: relative;
 }
 
 .resizer {
-    padding: 10px;
-    background-color: #30333a;
+    padding: 15px;
+    background-color: #303030;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+    border-radius: 3px;
 }
 
 .header {
@@ -43,22 +47,26 @@ canvas {
 }
 
 .canvas-bg {
-    background-color: #36393f;
-    margin-top: 10px;
+    background-color: hsl(0, 0%, 20%);
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .resize-head {
-    background-color: #000;
+    background-color: #3f51b5;
     width: 20px;
     height: 20px;
     position: relative;
     margin-bottom: -20px;
     bottom: 10px;
+    border-top-left-radius: 0% !important;
+    border-radius: 100%;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
 }
 
 .pfp,
 .icon {
-    @size: 64px;
+    @size: 40px;
     width: @size;
     height: @size;
     background-size: @size @size;
@@ -93,18 +101,12 @@ canvas {
     }
     .channel-name,
     .username {
-        font-family: Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-family: Roboto, Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
         font-size: 20px;
-        background-color: rgba(114, 137, 218, .5);
-        color: #8195db;
-        margin: 0px 10px;
+        color: #7289da;
+        margin: 0px 20px;
         white-space: nowrap;
         cursor: default;
-    }
-    .channel-name:hover,
-    .username:hover {
-        background-color: #7289da;
-        color: white;
     }
     .channel-name {
         text-align: end;
@@ -131,9 +133,15 @@ button {
 }
 
 .color{
-    width:20px;
-    height:20px;
+    width:30px;
+    height:30px;
     cursor: pointer;
+    border-radius: 100%;
+    margin: 10px;
+}
+
+.colors.expand{
+    background-color: #303030;
 }
 
 .overlay{
@@ -148,7 +156,8 @@ button {
     top:0;
     left:0;
     .expand{
-        box-shadow: 0 0 10px black;
+        box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
+        border-radius: 50px;
     }
 }
 
@@ -160,12 +169,13 @@ button {
 }
 
 .palette-overlay, .sizes-overlay{
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .tools{
     display: flex;
     flex-direction: row;
+    margin-right: 10px;
 }
 
 .tools-button{
@@ -175,11 +185,15 @@ button {
     justify-content: center;
     align-content: center;
     align-items: center;
+    border: 1px solid #ffffff20;
+    border-radius: 100%;
 }
 
 .palette-tool{
     background-color: rgba(0, 0, 0, 0.3);
     cursor: pointer;
+    border-radius: 100%;
+    margin-right: 20px;
 }
 
 .size-tool{
@@ -189,7 +203,7 @@ button {
 .sizes{
     display: flex;
     flex-direction: row;
-    background-color: #36393f;
+    background-color: #303030;
 }
 
 .size{
@@ -199,16 +213,110 @@ button {
     justify-content: center;
     align-content: center;
     align-items: center;
+    margin: 10px;
 }
 
 .size-circle{
     border-radius: 100%;
+    background-color: #fff !important;
 }
 
-.pen-tool,.eraser-tool{
-    font-family: Arial, Helvetica, sans-serif;
+.pen-tool,{
+    font-family: Material Icons, Roboto, Helvetica, sans-serif;
+    font-size: 20px;
+    padding: 0px;
+    color: #ffffff20;
+    background-color: #ffffff00;
+    background-size: 0%;
+    border-radius: 100%;
+    margin-left: 20px;
+    border: 1px solid #ffffff20;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
 }
 
-.pen-tool.selected, .eraser-tool.selected{
-    color: red;
+.pen-tool.selected,{
+    color: white;
+    background-color: #3f51b550;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+
+.eraser-tool{
+    font-family: Material Icons, Roboto, Helvetica, sans-serif;
+    font-size: 20px;
+    padding: 0px;
+    color: #ffffff20;
+    background-color: #ffffff00;
+    background-size: 0%;
+    border-radius: 100%;
+    margin-left: 20px;
+    margin-right: 20px;
+    border: 1px solid #ffffff20;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.eraser-tool.selected{
+    color: white;
+    background-color: #fcd73450;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.clear-tool{
+    font-family: Material Icons, Roboto, Helvetica, sans-serif;
+    font-size: 20px;
+    padding: 0px;
+    color: #ffffff20;
+    background-color: #ffffff00;
+    background-size: 0%;
+    border-radius: 100%;
+    border: 1px solid #ffffff20;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.clear-tool.selected{
+    color: white;
+    background-color: #f4433650;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+
+button{
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+    margin-left: auto;
+}
+
+button:hover{
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+button:active {
+    filter: brightness(120%);
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
 }
