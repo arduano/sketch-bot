@@ -26,6 +26,8 @@
         <div class="tools-button size-tool" (click)="sizesShown = true">
           <div class="size-circle" [ngStyle]="{'width.px': canvasStroke.lineWidth, 'height.px': canvasStroke.lineWidth, 'background-color': canvasStroke.strokeStyle}"></div>
         </div>
+        <div class="tools-button pen-tool" (click)="selectedTool = 'pen'" [ngClass]="{'selected': selectedTool == 'pen'}">pen</div>
+        <div class="tools-button eraser-tool" (click)="selectedTool = 'eraser'" [ngClass]="{'selected': selectedTool == 'eraser'}">eraser</div>
       </div>
     </div>
   </div>

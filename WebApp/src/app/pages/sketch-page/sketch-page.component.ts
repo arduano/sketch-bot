@@ -33,6 +33,8 @@ export class SketchPageComponent implements OnInit {
     this.headerWrapped = this.user_section.nativeElement.clientWidth + this.server_section.nativeElement.clientWidth >= this.header.nativeElement.clientWidth
   }
 
+  public selectedTool: string = 'pen';
+
   public colors: string[] = [
     '#67717a',
     '#000000',
@@ -201,17 +203,22 @@ export class SketchPageComponent implements OnInit {
     this.fixCanvasStroke()
   }
 
-  captureCanvasEvents(canvasEl: HTMLCanvasElement) {
-    var move = (res: any) => {
+  captureCanvasEvents(canvasEl: HTMLCanvasElement) {    
+    let move = (res: any) => {
       res.preventDefault();
       let pos = { x: 0, y: 0 };
       pos.x = res.clientX;
       pos.y = res.clientY;
       const rect = canvasEl.getBoundingClientRect();
 
+      if(this.selectedTool == 'pen') this.cx.globalCompositeOperation = "source-over";
+      if(this.selectedTool == 'eraser') this.cx.globalCompositeOperation = "destination-out";
+
       this.prevEvents.push(pos)
       if (this.prevEvents.length > 2) {
+        let full = false;
         if (this.prevEvents.length > 3) this.prevEvents.splice(0, 1)
+        else full = true;
 
         let pos = this.prevEvents.map(e => {
           return {
@@ -225,8 +232,8 @@ export class SketchPageComponent implements OnInit {
           pos[1],
           pos[2],
           0.5
-        ).split(0.5, 1)
-
+        )
+        if (!full) beizer = beizer.split(0.5, 1);
 
         let len = beizer.length();
         if (len > 20) len /= 3;
@@ -237,9 +244,23 @@ export class SketchPageComponent implements OnInit {
           this.drawOnCanvas(lot[i - 1], lot[i]);
         }
       }
+      else if(this.prevEvents.length == 1){
+        let pos = this.prevEvents.map(e => {
+          return {
+            x: e.x - rect.left,
+            y: e.y - rect.top
+          }
+        })
+        this.drawOnCanvas(pos[0], pos[0]);
+      }
     }
 
-    let canvasDraw = new Draggable(this.canvas, (a)=>a, move, () => { this.prevEvents = [] })
+    let start = (res: any) => {
+      move(res)
+      return res
+    }
+
+    let canvasDraw = new Draggable(this.canvas, start, move, () => { this.prevEvents = [] })
   }
 
   drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
