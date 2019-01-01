@@ -77,6 +77,7 @@ gulp.task('ng', async function(cb){
 
 gulp.task('install', async function(cb){
   await pRun('npm install -g typescript @angular/cli')
+  await pRun('npm install')
   await pRun('cd WebApp && npm install')
   await pRun('cd Server && npm install')
 })
