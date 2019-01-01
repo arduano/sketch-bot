@@ -319,21 +319,16 @@ export class Draggable {
     this.element = element.nativeElement;
 
     let doStart = (res: any, touch: boolean = false) => {
-      console.log('start');
       if (touch) this.state = start(res.touches[0]);
       else this.state = start(res);
     }
     let doMove = (res: any, touch: boolean = false) => {
-      console.log('move');
-
       if (this.state != null) {
         if (touch) move(res.touches[0], this.state);
         else move(res, this.state)
       }
     }
     let doEnd = (res: any, touch: boolean = false) => {
-      console.log('end');
-
       if (this.state != null) {
         if (touch) end(res.touches[0]);
         else end(res)

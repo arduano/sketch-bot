@@ -3,84 +3,84 @@ const join = require('async-child-process').join;
 const fs = require('fs');
 const exec = require('child_process');
 
-async function pRun(command: any) {
+async function pRun(command) {
   let run = exec.exec(command);
 
-  run.stdout.on('data', function (data: any) {
+  run.stdout.on('data', function (data) {
     console.log(data);
   });
 
-  run.stderr.on('data', function (data: any) {
+  run.stderr.on('data', function (data) {
     console.log(data);
   });
 
-  run.on('exit', function (code: any) {
+  run.on('exit', function (code) {
     //console.log('child process exited with code ' + code.toString());
   });
 
   await join(run)
 }
 
-async function serverBuild(cb: any) {
+async function serverBuild(cb) {
   await pRun('cd Server && tsc')
   try{
     fs.unlinkSync('www/package.json')
     fs.unlinkSync('www/settings.json')
     fs.unlinkSync('www/app.yaml')
   }
-  catch{}
-  fs.copyFileSync('package.json', 'www/package.json', function (e: any) {
+  catch(e){}
+  fs.copyFileSync('package.json', 'www/package.json', function (e) {
     console.log(e);
     throw e;
   })
-  fs.copyFileSync('settings.json', 'www/settings.json', function (e: any) {
+  fs.copyFileSync('settings.json', 'www/settings.json', function (e) {
     console.log(e);
     throw e;
   })
-  fs.copyFileSync('app.yaml', 'www/app.yaml', function (e: any) {
+  fs.copyFileSync('app.yaml', 'www/app.yaml', function (e) {
     console.log(e);
     throw e;
   })
   await pRun('cd www && npm install')
 }
 
-async function serverStart(cb: any) {
+async function serverStart(cb) {
   await pRun('cd www && node server.js')
 }
 
-async function clientBuild(cb: any) {
+async function clientBuild(cb) {
   await pRun('cd WebApp && ng build --prod')
 }
 
 gulp.task('server-build', serverBuild);
 gulp.task('server-start', serverStart)
 
-gulp.task('server', async function (cb: any) {
+gulp.task('server', async function (cb) {
   await serverBuild(cb)
   await serverStart(cb)
 })
 
-gulp.task('build', async function (cb: any) {
+gulp.task('build', async function (cb) {
   await clientBuild(cb)
   await serverBuild(cb)
 })
 
-gulp.task('build-run', async function (cb: any) {
+gulp.task('build-run', async function (cb) {
   await clientBuild(cb)
   await serverBuild(cb)
   await serverStart(cb)
 })
 
-gulp.task('ng', async function(cb: any){
+gulp.task('ng', async function(cb){
   await pRun('cd WebApp && ng serve')
 })
 
-gulp.task('install', async function(cb: any){
+gulp.task('install', async function(cb){
   await pRun('npm install -g typescript @angular/cli')
   await pRun('cd WebApp && npm install')
   await pRun('cd Server && npm install')
 })
 
-gulp.task('replace', async function(cb: any){
+gulp.task('replace', async function(cb){
   await pRun('python replace_localhost.py')
 })
