@@ -101,32 +101,20 @@ export class SketchPageComponent implements OnInit {
     canvasEl.width = this.width;
     canvasEl.height = this.height;
     {
-      var move = (res: MouseEvent | TouchEvent, state: { startPos: { x: number, y: number }, startVal: any }) => {
+      var move = (res: any, state: { startPos: { x: number, y: number }, startVal: any }) => {
         res.preventDefault();
         let drag = [0, 0];
-        if (res instanceof TouchEvent) {
-          drag[0] = res.touches[0].clientX;
-          drag[1] = res.touches[0].clientY;
-        }
-        else {
-          drag[0] = res.clientX;
-          drag[1] = res.clientY;
-        }
+        drag[0] = res.clientX;
+        drag[1] = res.clientY;
         drag = [drag[0] - state.startPos.x, drag[1] - state.startPos.y];
         let size = [state.startVal.x + drag[0] * 2, state.startVal.y + drag[1] * 2]
         this.fixCanvasWidth(size)
       }
 
-      let start = (res: MouseEvent | TouchEvent) => {
+      let start = (res: any) => {
         let state = { startPos: { x: 0, y: 0 }, startVal: { x: 0, y: 0 } }
-        if (res instanceof TouchEvent) {
-          state.startPos.x = res.touches[0].clientX
-          state.startPos.y = res.touches[0].clientY
-        }
-        else {
-          state.startPos.x = res.clientX
-          state.startPos.y = res.clientY
-        }
+        state.startPos.x = res.clientX
+        state.startPos.y = res.clientY
         state.startVal.x = this.canvas.nativeElement.width
         state.startVal.y = this.canvas.nativeElement.height
         return state
@@ -214,17 +202,11 @@ export class SketchPageComponent implements OnInit {
   }
 
   captureCanvasEvents(canvasEl: HTMLCanvasElement) {
-    var move = (res: MouseEvent | TouchEvent) => {
+    var move = (res: any) => {
       res.preventDefault();
       let pos = { x: 0, y: 0 };
-      if (res instanceof TouchEvent) {
-        pos.x = res.touches[0].clientX;
-        pos.y = res.touches[0].clientY;
-      }
-      else {
-        pos.x = res.clientX;
-        pos.y = res.clientY;
-      }
+      pos.x = res.clientX;
+      pos.y = res.clientY;
       const rect = canvasEl.getBoundingClientRect();
 
       this.prevEvents.push(pos)
@@ -257,31 +239,7 @@ export class SketchPageComponent implements OnInit {
       }
     }
 
-    fromEvent(canvasEl, 'mousedown')
-      .pipe(
-        switchMap((e) => {
-          return fromEvent(document.body, 'mousemove')
-            .pipe(
-              takeUntil(fromEvent(window, 'mouseup')),
-              //takeUntil(fromEvent(canvasEl, 'mouseleave'))
-            )
-        })
-      ).subscribe(move);
-
-    fromEvent(canvasEl, 'touchstart')
-      .pipe(
-        switchMap((e) => {
-          return fromEvent(document.body, 'touchmove')
-            .pipe(
-              takeUntil(fromEvent(window, 'touchend')),
-              //takeUntil(fromEvent(canvasEl, 'mouseleave'))
-            )
-        })
-      ).subscribe(move);
-
-    fromEvent(window, 'mouseup').subscribe(() => { this.prevEvents = [] })
-    fromEvent(window, 'touchend').subscribe(() => { this.prevEvents = [] })
-    //fromEvent(document.body, 'mouseleave').subscribe(() => this.prevEvents = []; this.prevBeizer = null;)
+    let canvasDraw = new Draggable(this.canvas, (a)=>a, move, () => { this.prevEvents = [] })
   }
 
   drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
@@ -334,22 +292,30 @@ export class Draggable {
 
   constructor(
     element: ElementRef,
-    start: (res: MouseEvent | TouchEvent) => { startPos: { x: number, y: number }, startVal: any },
-    move: (res: MouseEvent | TouchEvent, state: { startPos: { x: number, y: number }, startVal: any }) => void,
-    end: (res: MouseEvent | TouchEvent) => void) {
+    start: (res: any) => { startPos: { x: number, y: number }, startVal: any },
+    move: (res: any, state: { startPos: { x: number, y: number }, startVal: any }) => void,
+    end: (res: any) => void) {
     this.element = element.nativeElement;
 
-    let doStart = (res: MouseEvent | TouchEvent) => {
-      this.state = start(res);
+    let doStart = (res: any, touch: boolean = false) => {
+      console.log('start');
+      if (touch) this.state = start(res.touches[0]);
+      else this.state = start(res);
     }
-    let doMove = (res: MouseEvent | TouchEvent) => {
+    let doMove = (res: any, touch: boolean = false) => {
+      console.log('move');
+
       if (this.state != null) {
-        move(res, this.state);
+        if (touch) move(res.touches[0], this.state);
+        else move(res, this.state)
       }
     }
-    let doEnd = (res: MouseEvent | TouchEvent) => {
+    let doEnd = (res: any, touch: boolean = false) => {
+      console.log('end');
+
       if (this.state != null) {
-        end(res);
+        if (touch) end(res.touches[0]);
+        else end(res)
         this.state = null;
       }
     }
