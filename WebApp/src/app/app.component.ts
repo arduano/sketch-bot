@@ -16,8 +16,7 @@ export class AppComponent {
       if (code != null) {
         let response = await this.webapi.requestToken(code);
         console.log(response);
-        let ids = state.split('x');
-        this.router.navigate(['sketch/' + ids[0] + '/' + ids[1]]);
+        this.router.navigate(['sketch/' + state]);
       }
     })
   }

@@ -29,18 +29,17 @@ export class DiscordBot {
 
         this.client.on('message', (message) => {
             if (message.content.startsWith('/sketch')) {
-                message.channel.send(baseUrl + "sketch/" + message.guild.id + '/' + message.channel.id);
+                message.channel.send(baseUrl + 'sketch/' + message.channel.id);
             }
         })
         this.client.login(token);
     }
 
-    public async confirmChannel(gid: string, cid: string, uid: string) {
+    public async confirmChannel(cid: string, uid: string) {
         let data: any = {};
-        let guild = this.client.guilds.get(gid);
-        if (guild == null) { return 'Invalid server'; }
-        let channel = guild.channels.get(cid);
+        let channel = this.client.channels.get(cid) as Discord.GuildChannel;
         if (channel == null) { return 'Invalid channel'; }
+        let guild = channel.guild;
         let user = await this.client.fetchUser(uid);
         if (user == null) { return 'Invalid user'; }
         let member;
@@ -61,13 +60,12 @@ export class DiscordBot {
         return data;
     }
 
-    public async sendImage(data, uid, gid, cid) {
-        let c = await this.confirmChannel(gid, cid, uid);
+    public async sendImage(data, uid, cid) {
+        let c = await this.confirmChannel(cid, uid);
         if(typeof(c) == "string") return c;
-        let guild = this.client.guilds.get(gid);
-        if (guild == null) { return null; }
-        let channel = guild.channels.get(cid) as Discord.TextChannel;
+        let channel = this.client.channels.get(cid) as Discord.TextChannel;
         if (channel == null) { return null; }
+        let guild = channel.guild;
         let user = await this.client.fetchUser(uid);
         if (channel == null) { return null; }
         let buffer = Buffer.from(data.replace("data:image/png;base64,", ""), "base64");

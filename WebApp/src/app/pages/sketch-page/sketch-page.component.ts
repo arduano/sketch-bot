@@ -67,7 +67,6 @@ export class SketchPageComponent implements OnInit {
   private cx: CanvasRenderingContext2D;
 
   public user: any = { username: "" };
-  private gid: string;
   private cid: string;
   public channelDetails: any = { "guildName": "", "guildIconUrl": "", "channelName": "" };
 
@@ -81,7 +80,6 @@ export class SketchPageComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
-      this.gid = params['gid']
       this.cid = params['cid']
     })
     let token = this.webapi.getToken();
@@ -279,11 +277,11 @@ export class SketchPageComponent implements OnInit {
   async sendImage() {
     let data = this.canvas.nativeElement.toDataURL();
     if (this.user != null)
-      this.webapi.postImage(data, this.user.id, this.gid, this.cid)
+      this.webapi.postImage(data, this.user.id, this.cid)
   }
 
   sendToVerify() {
-    let state = this.gid + 'x' + this.cid;
+    let state = this.cid;
     window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.appspot.com%2F&response_type=code&scope=identify&state=' + state;
   }
 
@@ -300,7 +298,7 @@ export class SketchPageComponent implements OnInit {
   }
 
   async getChannelData() {
-    let channelDetails = await this.webapi.getGuildChannel(this.gid, this.cid, this.user.id);
+    let channelDetails = await this.webapi.getGuildChannel(this.cid, this.user.id);
     if (channelDetails != null) this.channelDetails = channelDetails;
     else this.lastError = "Couldn't find channel";
     this.checkWrapped()

@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SketchPageComponent } from './pages/sketch-page/sketch-page.component';
 
 const routes: Routes = [
-  { path: 'sketch/:gid/:cid', component: SketchPageComponent }
+  { path: 'sketch/:cid', component: SketchPageComponent }
 ];
 
 @NgModule({

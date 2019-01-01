@@ -49,9 +49,6 @@ export class WebApi {
         router.get('/', (req, res) => {
             res.sendFile('index.html', { root: __dirname })
         })
-        router.get('/api/:id', (req, res) => {
-            res.json({ id: req.params.id });
-        })
         router.get('/api/get-token/:code', (req, res) => {
             let url: any = this.discordApi + 'oauth2/token'
             let body = {
@@ -69,16 +66,16 @@ export class WebApi {
                 res.status(400).send(r.message)
             })
         })
-        router.get('/api/get-channel-data/:gid/:cid/:uid', async (req, res) => {
-            let data = await this.discordBot.confirmChannel(req.params.gid, req.params.cid, req.params.uid)
+        router.get('/api/get-channel-data/:cid/:uid', async (req, res) => {
+            let data = await this.discordBot.confirmChannel(req.params.cid, req.params.uid)
             if (typeof (data) == "string") {
                 res.status(400).send(data)
                 return;
             }
             res.json(data);
         })
-        router.post('/api/post/:gid/:cid', async (req, res) => {
-            let status = await this.discordBot.sendImage(req.body.image, req.body.user, req.params.gid, req.params.cid)
+        router.post('/api/post/:cid', async (req, res) => {
+            let status = await this.discordBot.sendImage(req.body.image, req.body.user, req.params.cid)
             if (status == true) res.status(200).send('Sent');
             else res.status(400).send(status);
         })
