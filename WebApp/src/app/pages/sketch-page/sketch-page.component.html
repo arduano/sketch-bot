@@ -23,30 +23,27 @@
     <div #tools class="tools-container">
       <div class="tools">
         <div class="tools-button palette-tool" (click)="paletteShown = true" [ngStyle]="{'background-color': canvasStroke.strokeStyle}"></div>
+        <div class="tools-button size-tool" (click)="sizesShown = true">
+          <div class="size-circle" [ngStyle]="{'width.px': canvasStroke.lineWidth, 'height.px': canvasStroke.lineWidth, 'background-color': canvasStroke.strokeStyle}"></div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="resize-head" [ngStyle]="{ 'left.px': canvas.width / 2 + 10, 'top.px': -tools.offsetHeight - 20 }"
-    (mousemove)="dragResize($event)" (mousedown)="resizeStart($event)" (touchmove)="dragResize($event)" (touchstart)="resizeStart($event)"></div>
+  <div #resize_head class="resize-head" [ngStyle]="{ 'left.px': canvas.width / 2 + 10, 'top.px': -tools.offsetHeight - 20 }"></div>
   <button (click)="sendImage()">Send</button>
 </div>
 <div *ngIf="lastError != ''" class="error-overlay overlay">
   {{lastError}}
 </div>
 <div class="palette-overlay overlay" [@paletteTransition]="paletteShown" (click)="paletteShown = false">
-  <div class="colors">
+  <div class="colors expand">
     <div class="color" *ngFor="let c of colors" [ngStyle]="{'background-color': c}" (click)="changeColor(c)"></div>
   </div>
 </div>
-<!--<p>
-  sketch-page works!
-</p>
-<h3>{{lastError}}</h3>
-<div> {{ channelDetails.guildName }} </div>
-<div> {{ channelDetails.channelName }} </div>
-<div class="server-icon" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + channelDetails.guildIconUrl + ')' }"></div>
-
-<button (click)="sendToVerify()">Verify</button>
-<button (click)="logOut()">Log Out</button>
-<br>
-<div class="pfp" *ngIf="user != null" [ngStyle]="{ 'background-image': 'url(' + getPfpUrl() + ')' }"></div>-->
+<div class="sizes-overlay overlay" [@paletteTransition]="sizesShown" (click)="sizesShown = false">
+  <div class="sizes expand">
+    <div class="size" *ngFor="let s of sizes" (click)="changeSize(s)">
+      <div class="size-circle" [ngStyle]="{'width.px': s, 'height.px': s, 'background-color': canvasStroke.strokeStyle}"></div>
+    </div>
+  </div>
+</div>

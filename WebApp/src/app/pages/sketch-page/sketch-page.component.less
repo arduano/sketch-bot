@@ -22,6 +22,7 @@ canvas {
     border: 1px solid #000;
     border-radius: 3px;
     margin-bottom: -4px;
+    position: relative;
 }
 
 .resizer {
@@ -146,21 +147,60 @@ button {
     align-items: center;
     top:0;
     left:0;
+    .expand{
+        box-shadow: 0 0 10px black;
+    }
 }
 
 .error-overlay{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 30px;
     color: red;
+    pointer-events: none;
 }
 
-.palette-overlay{
+.palette-overlay, .sizes-overlay{
     background: rgba(0, 0, 0, 0.3);
 }
 
-.tools-button.palette-tool{
+.tools{
+    display: flex;
+    flex-direction: row;
+}
+
+.tools-button{
     width: 40px;
     height:40px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+.palette-tool{
     background-color: rgba(0, 0, 0, 0.3);
     cursor: pointer;
+}
+
+.size-tool{
+
+}
+
+.sizes{
+    display: flex;
+    flex-direction: row;
+    background-color: #36393f;
+}
+
+.size{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+
+.size-circle{
+    border-radius: 100%;
 }

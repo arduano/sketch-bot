@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { WebApiService } from './../../shared/web-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
@@ -21,6 +22,8 @@ export class SketchPageComponent implements OnInit {
   @ViewChild('server_section') public server_section: ElementRef;
   @ViewChild('user_section') public user_section: ElementRef;
   @ViewChild('header') public header: ElementRef;
+  @ViewChild('resize_head') public resize_head: ElementRef;
+  @ViewChild('brush_size_draggable') public brush_size_draggable: ElementRef;
 
   @Input() public width = 600;
   @Input() public height = 400;
@@ -47,19 +50,20 @@ export class SketchPageComponent implements OnInit {
     '#FF00FF',
     '#800080',
   ]
+  public paletteShown = false;
+
+  public sizes: number[] = [
+    1, 3, 5, 10, 20, 30, 40
+  ]
+  public sizesShown = false;
 
   private prevEvents: { x: number, y: number }[] = [];
-  private prevBeizer = null;
 
-  private draggingResize: boolean = false;
   public resizeDragStartPos;
   public resizeDragCanvasStartSize;
 
   private cx: CanvasRenderingContext2D;
 
-  public persistentErrorText = "";
-  public temporaryErrorText = "";
-  public successText = "asdfasdfasdgdasgsdahgdsahgadfhfsgjmndghjnszrdfgtghjnsfrgthjnsydgrtf";
   public user: any = { username: "" };
   private gid: string;
   private cid: string;
@@ -70,7 +74,6 @@ export class SketchPageComponent implements OnInit {
   public pfpUrl = "";
   public username = "";
 
-  public paletteShown = false;
 
   constructor(private webapi: WebApiService, private route: ActivatedRoute, private router: Router) { }
 
@@ -86,7 +89,7 @@ export class SketchPageComponent implements OnInit {
     this.getUser().then(() =>
       this.getChannelData().catch(e => {
         this.lastError = e.error;
-        if (e.status == 0){
+        if (e.status == 0) {
           this.lastError = "Connection error";
         }
       })
@@ -97,12 +100,77 @@ export class SketchPageComponent implements OnInit {
 
     canvasEl.width = this.width;
     canvasEl.height = this.height;
+    {
+      var move = (res: MouseEvent | TouchEvent, state: { startPos: { x: number, y: number }, startVal: any }) => {
+        res.preventDefault();
+        let drag = [0, 0];
+        if (res instanceof TouchEvent) {
+          drag[0] = res.touches[0].clientX;
+          drag[1] = res.touches[0].clientY;
+        }
+        else {
+          drag[0] = res.clientX;
+          drag[1] = res.clientY;
+        }
+        drag = [drag[0] - state.startPos.x, drag[1] - state.startPos.y];
+        let size = [state.startVal.x + drag[0] * 2, state.startVal.y + drag[1] * 2]
+        this.fixCanvasWidth(size)
+      }
 
+      let start = (res: MouseEvent | TouchEvent) => {
+        let state = { startPos: { x: 0, y: 0 }, startVal: { x: 0, y: 0 } }
+        if (res instanceof TouchEvent) {
+          state.startPos.x = res.touches[0].clientX
+          state.startPos.y = res.touches[0].clientY
+        }
+        else {
+          state.startPos.x = res.clientX
+          state.startPos.y = res.clientY
+        }
+        state.startVal.x = this.canvas.nativeElement.width
+        state.startVal.y = this.canvas.nativeElement.height
+        return state
+      }
 
-    this.captureEvents(canvasEl);
-    window.onmouseup = () => { this.draggingResize = false }
-    window.onmousemove = (a) => { this.dragResize(a) }
-    this.fixCanvasWidth()
+      let resizeDraggable = new Draggable(this.resize_head, start, move, () => null)
+    }
+    // {
+    //   var move = (res: MouseEvent | TouchEvent, state: { startPos: { x: number, y: number }, startVal: any }) => {
+    //     res.preventDefault();
+    //     let drag = [0, 0];
+    //     if (res instanceof TouchEvent) {
+    //       drag[0] = res.touches[0].clientX;
+    //       drag[1] = res.touches[0].clientY;
+    //     }
+    //     else {
+    //       drag[0] = res.clientX;
+    //       drag[1] = res.clientY;
+    //     }
+    //     this.setMinWidth()
+    //     drag = [drag[0] - state.startPos.x, drag[1] - state.startPos.y];
+    //     let size = state.startVal + drag[0];
+    //     this.canvasStroke.lineWidth = size;
+    //   }
+
+    //   let start = (res: MouseEvent | TouchEvent) => {
+    //     let state = { startPos: { x: 0, y: 0 }, startVal: 0 }
+    //     if (res instanceof TouchEvent) {
+    //       state.startPos.x = res.touches[0].clientX
+    //       state.startPos.y = res.touches[0].clientY
+    //     }
+    //     else {
+    //       state.startPos.x = res.clientX
+    //       state.startPos.y = res.clientY
+    //     }
+    //     state.startVal = this.canvasStroke.lineWidth;
+    //     return state
+    //   }
+
+    //   let brushSizeDraggable = new Draggable(this.brush_size_draggable, start, move, () => null)
+    // }
+
+    this.captureCanvasEvents(canvasEl);
+    this.fixCanvasWidth(null)
     this.fixCanvasStroke()
   }
 
@@ -111,17 +179,22 @@ export class SketchPageComponent implements OnInit {
     this.minWidth = Math.max(this.user_section.nativeElement.clientWidth, this.server_section.nativeElement.clientWidth)
   }
 
-  fixCanvasWidth() {
+  fixCanvasWidth(size = null) {
     this.setMinWidth()
-    let size = [this.canvas.nativeElement.width, this.canvas.nativeElement.height]
+    if (size == null) size = [this.canvas.nativeElement.width, this.canvas.nativeElement.height]
+    if (size[0] < this.minWidth) size[0] = this.minWidth;
+    if (size[1] < 100) size[1] = 100;
     if (size[0] > window.innerWidth - 50) size[0] = window.innerWidth - 50;
     if (size[1] > window.innerHeight - 200) size[1] = window.innerHeight - 200;
+    size[0] = size[0] - size[0] % 2;
+    size[1] = size[1] - size[1] % 2;
     resizeCanvas({
       canvas: this.canvas.nativeElement,
       diff: [size[0] - this.canvas.nativeElement.width, size[1] - this.canvas.nativeElement.height],
-      from: [0, 0]//[this.canvas.nativeElement.width / 2, this.canvas.nativeElement.height / 2]
+      from: [this.canvas.nativeElement.width / 2, this.canvas.nativeElement.height / 2]
     })
     this.checkWrapped()
+    this.fixCanvasStroke()
   }
 
   public canvasStroke = { lineWidth: 3, lineCap: 'round', strokeStyle: '#67717a' }
@@ -132,44 +205,15 @@ export class SketchPageComponent implements OnInit {
   }
 
   changeColor(c) {
-    console.log(c);
-
     this.canvasStroke.strokeStyle = c;
     this.fixCanvasStroke()
   }
-
-  resizeStart($event) {
-    if ($event instanceof TouchEvent) this.resizeDragStartPos = [$event.touches[0].clientX, $event.touches[0].clientY];
-    else this.resizeDragStartPos = [$event.clientX, $event.clientY];
-    this.resizeDragCanvasStartSize = [this.canvas.nativeElement.width, this.canvas.nativeElement.height];
-    this.draggingResize = true;
+  changeSize(s) {
+    this.canvasStroke.lineWidth = s;
+    this.fixCanvasStroke()
   }
 
-  dragResize($event) {
-    if (this.draggingResize) {
-      this.setMinWidth()
-      $event.preventDefault()
-      let drag;
-      if ($event instanceof TouchEvent) drag = [$event.touches[0].clientX - this.resizeDragStartPos[0], $event.touches[0].clientY - this.resizeDragStartPos[1]];
-      else drag = [$event.clientX - this.resizeDragStartPos[0], $event.clientY - this.resizeDragStartPos[1]];
-      let size = [this.resizeDragCanvasStartSize[0] + drag[0] * 2, this.resizeDragCanvasStartSize[1] + drag[1] * 2]
-      if (size[0] < this.minWidth) size[0] = this.minWidth;
-      size[0] = size[0] - size[0] % 2;
-      if (size[0] < 100) size[0] = 100;
-      if (size[1] < 100) size[1] = 100;
-      if (size[0] > window.innerWidth - 50) size[0] = window.innerWidth - 50;
-      if (size[1] > window.innerHeight - 200) size[1] = window.innerHeight - 200;
-      resizeCanvas({
-        canvas: this.canvas.nativeElement,
-        diff: [size[0] - this.canvas.nativeElement.width, size[1] - this.canvas.nativeElement.height],
-        from: [0, 0]//[this.canvas.nativeElement.width / 2, this.canvas.nativeElement.height / 2]
-      })
-      this.fixCanvasStroke()
-      this.checkWrapped()
-    }
-  }
-
-  captureEvents(canvasEl: HTMLCanvasElement) {
+  captureCanvasEvents(canvasEl: HTMLCanvasElement) {
     var move = (res: MouseEvent | TouchEvent) => {
       res.preventDefault();
       let pos = { x: 0, y: 0 };
@@ -210,7 +254,6 @@ export class SketchPageComponent implements OnInit {
         for (var i = 0; i < lot.length; i++) {
           this.drawOnCanvas(lot[i - 1], lot[i]);
         }
-        this.prevBeizer = beizer
       }
     }
 
@@ -236,8 +279,8 @@ export class SketchPageComponent implements OnInit {
         })
       ).subscribe(move);
 
-    fromEvent(window, 'mouseup').subscribe(() => { this.prevEvents = []; this.prevBeizer = null; })
-    fromEvent(window, 'touchend').subscribe(() => { this.prevEvents = []; this.prevBeizer = null; })
+    fromEvent(window, 'mouseup').subscribe(() => { this.prevEvents = [] })
+    fromEvent(window, 'touchend').subscribe(() => { this.prevEvents = [] })
     //fromEvent(document.body, 'mouseleave').subscribe(() => this.prevEvents = []; this.prevBeizer = null;)
   }
 
@@ -282,5 +325,59 @@ export class SketchPageComponent implements OnInit {
     if (channelDetails != null) this.channelDetails = channelDetails;
     else this.lastError = "Couldn't find channel";
     this.checkWrapped()
+  }
+}
+
+export class Draggable {
+  public element: any;
+  public state: { startPos: { x: number, y: number }, startVal: { x: number, y: number } } = null;
+
+  constructor(
+    element: ElementRef,
+    start: (res: MouseEvent | TouchEvent) => { startPos: { x: number, y: number }, startVal: any },
+    move: (res: MouseEvent | TouchEvent, state: { startPos: { x: number, y: number }, startVal: any }) => void,
+    end: (res: MouseEvent | TouchEvent) => void) {
+    this.element = element.nativeElement;
+
+    let doStart = (res: MouseEvent | TouchEvent) => {
+      this.state = start(res);
+    }
+    let doMove = (res: MouseEvent | TouchEvent) => {
+      if (this.state != null) {
+        move(res, this.state);
+      }
+    }
+    let doEnd = (res: MouseEvent | TouchEvent) => {
+      if (this.state != null) {
+        end(res);
+        this.state = null;
+      }
+    }
+
+    fromEvent(this.element, 'mousedown')
+      .pipe(
+        switchMap((e) => {
+          return fromEvent(window, 'mousemove')
+            .pipe(
+              takeUntil(fromEvent(window, 'mouseup')),
+            )
+        })
+      ).subscribe(doMove);
+
+    fromEvent(this.element, 'mousedown').subscribe(doStart)
+    fromEvent(this.element, 'touchstart').subscribe(doStart)
+
+    fromEvent(this.element, 'touchstart')
+      .pipe(
+        switchMap((e) => {
+          return fromEvent(window, 'touchmove')
+            .pipe(
+              takeUntil(fromEvent(window, 'touchend')),
+            )
+        })
+      ).subscribe(doMove);
+
+    fromEvent(window, 'mouseup').subscribe(doEnd)
+    fromEvent(window, 'touchend').subscribe(doEnd)
   }
 }

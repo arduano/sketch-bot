@@ -20,10 +20,10 @@ export const paletteTransition = trigger('paletteTransition', [
     })),
     transition('false => true', [
         style({ display: 'flex', opacity: 0 }),
-        query('.colors', style({transform: 'scale(0.5)'})),
+        query('.expand', style({transform: 'scale(0.5)'})),
         group([
             animate('0.1s', style({opacity: 1})),
-            query('.colors', animate('0.1s ease-out', style({transform: 'scale(1)'})),),
+            query('.expand', animate('0.1s ease-out', style({transform: 'scale(1)'})),),
         ])
     ]),
     transition('true => false', [
