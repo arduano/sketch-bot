@@ -3,9 +3,11 @@ import { WebApiService } from './../../shared/web-api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { fromEvent } from 'rxjs';
-import { switchMap, takeUntil, pairwise, take, buffer, max } from 'rxjs/operators';
+import { switchMap, takeUntil, pairwise, take, buffer, max, delay } from 'rxjs/operators';
 import resizeCanvas from 'resize-canvas'
 import { paletteTransition } from './sketch-page.animations';
+import { MockPipeResolver } from '@angular/compiler/testing';
+import { MatButton } from '@angular/material';
 declare var require: any;
 const Beizer = require('bezier-js')
 
@@ -24,6 +26,8 @@ export class SketchPageComponent implements OnInit {
   @ViewChild('header') public header: ElementRef;
   @ViewChild('resize_head') public resize_head: ElementRef;
   @ViewChild('brush_size_draggable') public brush_size_draggable: ElementRef;
+  @ViewChild('tools') public tools: ElementRef;
+  @ViewChild('send_button') public send_button: MatButton;
 
   @Input() public width = 600;
   @Input() public height = 400;
@@ -34,6 +38,8 @@ export class SketchPageComponent implements OnInit {
   }
 
   public selectedTool: string = 'pen';
+
+  public button_state = 'ready'
 
   public colors: string[] = [
     '#67717a',
@@ -122,40 +128,6 @@ export class SketchPageComponent implements OnInit {
 
       let resizeDraggable = new Draggable(this.resize_head, start, move, () => null)
     }
-    // {
-    //   var move = (res: MouseEvent | TouchEvent, state: { startPos: { x: number, y: number }, startVal: any }) => {
-    //     res.preventDefault();
-    //     let drag = [0, 0];
-    //     if (res instanceof TouchEvent) {
-    //       drag[0] = res.touches[0].clientX;
-    //       drag[1] = res.touches[0].clientY;
-    //     }
-    //     else {
-    //       drag[0] = res.clientX;
-    //       drag[1] = res.clientY;
-    //     }
-    //     this.setMinWidth()
-    //     drag = [drag[0] - state.startPos.x, drag[1] - state.startPos.y];
-    //     let size = state.startVal + drag[0];
-    //     this.canvasStroke.lineWidth = size;
-    //   }
-
-    //   let start = (res: MouseEvent | TouchEvent) => {
-    //     let state = { startPos: { x: 0, y: 0 }, startVal: 0 }
-    //     if (res instanceof TouchEvent) {
-    //       state.startPos.x = res.touches[0].clientX
-    //       state.startPos.y = res.touches[0].clientY
-    //     }
-    //     else {
-    //       state.startPos.x = res.clientX
-    //       state.startPos.y = res.clientY
-    //     }
-    //     state.startVal = this.canvasStroke.lineWidth;
-    //     return state
-    //   }
-
-    //   let brushSizeDraggable = new Draggable(this.brush_size_draggable, start, move, () => null)
-    // }
 
     this.captureCanvasEvents(canvasEl);
     this.fixCanvasWidth(null)
@@ -164,7 +136,11 @@ export class SketchPageComponent implements OnInit {
 
   public minWidth = 0;
   setMinWidth() {
-    this.minWidth = Math.max(this.user_section.nativeElement.clientWidth, this.server_section.nativeElement.clientWidth)
+    this.minWidth = Math.max(
+      this.user_section.nativeElement.clientWidth, 
+      this.server_section.nativeElement.clientWidth,
+      this.tools.nativeElement.clientWidth + this.send_button._elementRef.nativeElement.clientWidth
+      )
   }
 
   fixCanvasWidth(size = null) {
@@ -201,7 +177,16 @@ export class SketchPageComponent implements OnInit {
     this.fixCanvasStroke()
   }
 
-  captureCanvasEvents(canvasEl: HTMLCanvasElement) {    
+  captureCanvasEvents(canvasEl: HTMLCanvasElement) {
+    this.canvas.nativeElement.addEventListener('wheel', (event) => {
+      let delta = Math.round(event.deltaY / 100)
+      let i = this.sizes.findIndex(p => p == this.canvasStroke.lineWidth);
+      i -= delta
+      i = Math.min(Math.max(i, 0), this.sizes.length - 1)
+      this.canvasStroke.lineWidth = this.sizes[i]
+      this.fixCanvasStroke()
+      return false;
+    }, false);
     let move = (res: any) => {
       res.preventDefault();
       let pos = { x: 0, y: 0 };
@@ -209,11 +194,30 @@ export class SketchPageComponent implements OnInit {
       pos.y = res.clientY;
       const rect = canvasEl.getBoundingClientRect();
 
-      if(this.selectedTool == 'pen') this.cx.globalCompositeOperation = "source-over";
-      if(this.selectedTool == 'eraser') this.cx.globalCompositeOperation = "destination-out";
+      if (this.selectedTool == 'pen') this.cx.globalCompositeOperation = "source-over";
+      if (this.selectedTool == 'eraser') this.cx.globalCompositeOperation = "destination-out";
 
       this.prevEvents.push(pos)
       if (this.prevEvents.length > 2) {
+        if (this.selectedTool == 'fill') return
+        if (this.selectedTool == 'pan') {
+          let diff = [
+            this.prevEvents[this.prevEvents.length - 1].x - this.prevEvents[this.prevEvents.length - 2].x,
+            this.prevEvents[this.prevEvents.length - 1].y - this.prevEvents[this.prevEvents.length - 2].y
+          ]
+          resizeCanvas({
+            canvas: this.canvas.nativeElement,
+            diff: [-diff[0], -diff[1]],
+            from: [0, 0]
+          })
+          resizeCanvas({
+            canvas: this.canvas.nativeElement,
+            diff: [diff[0], diff[1]],
+            from: [canvasEl.width, canvasEl.height]
+          })
+          this.fixCanvasStroke()
+          return
+        }
         let full = false;
         if (this.prevEvents.length > 3) this.prevEvents.splice(0, 1)
         else full = true;
@@ -237,12 +241,19 @@ export class SketchPageComponent implements OnInit {
         if (len > 20) len /= 3;
         if (len < 2) len = 2;
         let lot: [] = beizer.getLUT(Math.floor(len))
-        //for (var i = Math.floor(lot.length / 2); i < lot.length; i++) {
         for (var i = 0; i < lot.length; i++) {
           this.drawOnCanvas(lot[i - 1], lot[i]);
         }
       }
-      else if(this.prevEvents.length == 1){
+      else if (this.prevEvents.length == 1 && this.selectedTool != 'pan') {
+        if (this.selectedTool == 'fill') {
+          let pos = {
+            x: this.prevEvents[0].x - Math.round(rect.left),
+            y: this.prevEvents[0].y - Math.round(rect.top)
+          }
+          this.flood_fill(pos.x, pos.y, this.canvasStroke.strokeStyle)
+          return
+        }
         let pos = this.prevEvents.map(e => {
           return {
             x: e.x - rect.left,
@@ -274,10 +285,19 @@ export class SketchPageComponent implements OnInit {
     }
   }
 
+  clearCanvas() {
+    let canvas: HTMLCanvasElement = this.canvas.nativeElement;
+    this.cx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
   async sendImage() {
     let data = this.canvas.nativeElement.toDataURL();
-    if (this.user != null)
-      this.webapi.postImage(data, this.user.id, this.cid)
+    if (this.user != null && this.button_state == 'ready') {
+      this.button_state = 'sending'
+      await this.webapi.postImage(data, this.user.id, this.cid)
+      this.button_state = 'pause'
+      window.setTimeout(() => this.button_state = 'ready', 10000)
+    }
   }
 
   sendToVerify() {
@@ -303,8 +323,140 @@ export class SketchPageComponent implements OnInit {
     else this.lastError = "Couldn't find channel";
     this.checkWrapped()
   }
-}
 
+  flood_fill(x, y, color) {
+    color = this.color_to_rgba(color)
+    let pixel_stack = [{ x: x, y: y }];
+    let pixels = this.cx.getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+    let checked = {}
+    var linear_cords = (y * this.canvas.nativeElement.width + x) * 4;
+    let original_color = {
+      r: pixels.data[linear_cords],
+      g: pixels.data[linear_cords + 1],
+      b: pixels.data[linear_cords + 2],
+      a: pixels.data[linear_cords + 3]
+    };
+
+    if (
+      original_color.r == color.r &&
+      original_color.g == color.g &&
+      original_color.b == color.b &&
+      original_color.a != 0
+    ) return
+
+    while (pixel_stack.length > 0) {
+      let new_pixel = pixel_stack.shift();
+      x = new_pixel.x;
+      y = new_pixel.y;
+      if (checked[y * this.canvas.nativeElement.width + x] == true) continue;
+      checked[y * this.canvas.nativeElement.width + x] = true;
+      //console.log( x + ", " + y ) ;
+
+      linear_cords = (y * this.canvas.nativeElement.width + x) * 4;
+      while (y-- >= 0 &&
+        (pixels.data[linear_cords] == original_color.r &&
+          pixels.data[linear_cords + 1] == original_color.g &&
+          pixels.data[linear_cords + 2] == original_color.b ||
+          pixels.data[linear_cords + 3] < 255
+        )) {
+        linear_cords -= this.canvas.nativeElement.width * 4;
+      }
+      linear_cords += this.canvas.nativeElement.width * 4;
+      y++;
+
+      var reached_left = false;
+      var reached_right = false;
+      while (y++ < this.canvas.nativeElement.height &&
+        (pixels.data[linear_cords] == original_color.r &&
+          pixels.data[linear_cords + 1] == original_color.g &&
+          pixels.data[linear_cords + 2] == original_color.b ||
+          pixels.data[linear_cords + 3] < 255
+        )) {
+        if (pixels.data[linear_cords + 3] == 255) {
+          pixels.data[linear_cords] = color.r;
+          pixels.data[linear_cords + 1] = color.g;
+          pixels.data[linear_cords + 2] = color.b;
+          pixels.data[linear_cords + 3] = color.a;
+        }
+        else {
+          let a = pixels.data[linear_cords + 3] / 255;
+          pixels.data[linear_cords + 3] = 255;
+          pixels.data[linear_cords + 0] = pixels.data[linear_cords + 0] * a + color.r * (1 - a)
+          pixels.data[linear_cords + 1] = pixels.data[linear_cords + 1] * a + color.g * (1 - a)
+          pixels.data[linear_cords + 2] = pixels.data[linear_cords + 2] * a + color.b * (1 - a)
+        }
+
+        if (x > 0) {
+          if (pixels.data[linear_cords - 4] == original_color.r &&
+            pixels.data[linear_cords - 4 + 1] == original_color.g &&
+            pixels.data[linear_cords - 4 + 2] == original_color.b ||
+            pixels.data[linear_cords + 3] < 255
+          ) {
+            if (!reached_left) {
+              pixel_stack.push({ x: x - 1, y: y });
+              reached_left = true;
+            }
+          } else if (reached_left) {
+            reached_left = false;
+          }
+        }
+
+        if (x < this.canvas.nativeElement.width - 1) {
+          if (pixels.data[linear_cords + 4] == original_color.r &&
+            pixels.data[linear_cords + 4 + 1] == original_color.g &&
+            pixels.data[linear_cords + 4 + 2] == original_color.b ||
+            pixels.data[linear_cords + 4 + 3] < 255
+          ) {
+            if (!reached_right) {
+              pixel_stack.push({ x: x + 1, y: y });
+              reached_right = true;
+            }
+          } else if (reached_right) {
+            reached_right = false;
+          }
+        }
+
+        linear_cords += this.canvas.nativeElement.width * 4;
+      }
+    }
+    this.cx.putImageData(pixels, 0, 0);
+  }
+
+  is_in_pixel_stack(x, y, pixel_stack) {
+    for (var i = 0; i < pixel_stack.length; i++) {
+      if (pixel_stack[i].x == x && pixel_stack[i].y == y) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  generate_random_color() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  color_to_rgba(color) {
+    if (color[0] == "#") { // hex notation
+      color = color.replace("#", "");
+      var bigint = parseInt(color, 16);
+      var r = (bigint >> 16) & 255;
+      var g = (bigint >> 8) & 255;
+      var b = bigint & 255;
+      return {
+        r: r,
+        g: g,
+        b: b,
+        a: 255
+      };
+
+    }
+  }
+}
 export class Draggable {
   public element: any;
   public state: { startPos: { x: number, y: number }, startVal: { x: number, y: number } } = null;

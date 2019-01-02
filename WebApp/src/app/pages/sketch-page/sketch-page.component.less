@@ -1,6 +1,9 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-
-div, img, h3, button, p {
+div,
+img,
+h3,
+button,
+p {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -39,9 +42,9 @@ canvas {
     justify-content: stretch;
 }
 
-.header.wrapped{
+.header.wrapped {
     flex-direction: column;
-    .server-section{
+    .server-section {
         justify-content: flex-end;
     }
 }
@@ -74,16 +77,17 @@ canvas {
     border-radius: @size;
 }
 
-.wrapped .user-section-container{
+.wrapped .user-section-container {
     margin-bottom: -10px;
 }
 
-.user-section-container{
+.user-section-container {
     display: flex;
     justify-content: left;
     align-items: flex-start;
     width: 100%;
 }
+
 .server-section-container {
     display: flex;
     justify-content: flex-end;
@@ -123,28 +127,29 @@ button {
     user-select: none;
 }
 
-.tools-container{
+.tools-container {
     margin-top: 10px;
 }
 
-.colors{
+.colors {
     display: flex;
     margin-bottom: 10px;
+    padding: 10px
 }
 
-.color{
-    width:30px;
-    height:30px;
+.color {
+    width: 30px;
+    height: 30px;
     cursor: pointer;
     border-radius: 100%;
-    margin: 10px;
+    margin: 0px 5px;
 }
 
-.colors.expand{
+.colors.expand {
     background-color: #303030;
 }
 
-.overlay{
+.overlay {
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -153,60 +158,67 @@ button {
     align-content: center;
     justify-content: center;
     align-items: center;
-    top:0;
-    left:0;
-    .expand{
+    top: 0;
+    left: 0;
+    .expand {
         box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
         border-radius: 50px;
     }
 }
 
-.error-overlay{
+.error-overlay {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 30px;
     color: red;
     pointer-events: none;
 }
 
-.palette-overlay, .sizes-overlay{
+.palette-overlay,
+.sizes-overlay {
     background: rgba(0, 0, 0, 0.5);
 }
 
-.tools{
+.tools {
     display: flex;
     flex-direction: row;
-    margin-right: 10px;
+    div {
+        display: flex;
+        flex-direction: row
+    }
 }
 
-.tools-button{
+.tools-button {
     width: 40px;
-    height:40px;
+    height: 40px;
     display: flex;
     justify-content: center;
     align-content: center;
     align-items: center;
     border: 1px solid #ffffff20;
     border-radius: 100%;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+    margin-right: 10px;
+    border: 1px solid #ffffff20;
+    padding: 0px;
 }
 
-.palette-tool{
+.palette-tool {
     background-color: rgba(0, 0, 0, 0.3);
     cursor: pointer;
     border-radius: 100%;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
-.size-tool{
-
-}
-
-.sizes{
+.sizes {
     display: flex;
     flex-direction: row;
     background-color: #303030;
 }
 
-.size{
+.size {
     width: 40px;
     height: 40px;
     display: flex;
@@ -216,97 +228,84 @@ button {
     margin: 10px;
 }
 
-.size-circle{
+.size-circle {
     border-radius: 100%;
     background-color: #fff !important;
 }
 
-.pen-tool,{
+.pen-tool,
+    {
     font-family: Material Icons, Roboto, Helvetica, sans-serif;
     font-size: 20px;
-    padding: 0px;
     color: #ffffff20;
     background-color: #ffffff00;
     background-size: 0%;
-    border-radius: 100%;
-    margin-left: 20px;
-    border: 1px solid #ffffff20;
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
 }
 
-.pen-tool.selected,{
+.pen-tool.selected,
+    {
     color: white;
     background-color: #3f51b550;
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
 }
 
-
-.eraser-tool{
+.eraser-tool {
     font-family: Material Icons, Roboto, Helvetica, sans-serif;
     font-size: 20px;
-    padding: 0px;
     color: #ffffff20;
     background-color: #ffffff00;
     background-size: 0%;
-    border-radius: 100%;
-    margin-left: 20px;
-    margin-right: 20px;
-    border: 1px solid #ffffff20;
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
 }
 
-.eraser-tool.selected{
+.eraser-tool.selected {
     color: white;
     background-color: #fcd73450;
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
 }
 
-.clear-tool{
+.fill-tool {
     font-family: Material Icons, Roboto, Helvetica, sans-serif;
     font-size: 20px;
-    padding: 0px;
     color: #ffffff20;
     background-color: #ffffff00;
     background-size: 0%;
-    border-radius: 100%;
-    border: 1px solid #ffffff20;
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
 }
 
-.clear-tool.selected{
+.fill-tool.selected {
+    color: white;
+    background-color: rgba(86, 244, 54, 0.314);
+}
+
+.pan-tool {
+    font-family: Material Icons, Roboto, Helvetica, sans-serif;
+    font-size: 20px;
+    color: #ffffff20;
+    background-color: #ffffff00;
+    background-size: 0%;
+}
+
+.pan-tool.selected {
+    color: white;
+    background-color: #f436f450;
+}
+
+.clear-tool {
+    font-family: Material Icons, Roboto, Helvetica, sans-serif;
+    font-size: 20px;
+    color: #ffffff20;
+    background-color: #ffffff00;
+    background-size: 0%;
+    -webkit-transition: all 0.05s ease;
+    -moz-transition: all 0.05s ease;
+    -o-transition: all 0.05s ease;
+    transition: all 0.05s ease;
+}
+
+.clear-tool:active {
     color: white;
     background-color: #f4433650;
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
 }
 
-
-button{
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
+button {
     margin-left: auto;
-}
-
-button:hover{
     -webkit-transition: all 0.2s ease-out;
     -moz-transition: all 0.2s ease-out;
     -o-transition: all 0.2s ease-out;
@@ -315,8 +314,65 @@ button:hover{
 
 button:active {
     filter: brightness(120%);
-    -webkit-transition: all 0.2s ease-out;
-    -moz-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
+}
+
+.send-button {
+    text-align: right;
+    display: inline;
+    display: flex;
+    flex-direction: row;
+}
+
+.send-icons-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.send-icon {
+    position: relative;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.send-icon.hidden{
+    transform: scale(0);
+    opacity: 0;
+}
+
+.send-icon.circle {
+    left: -20px;
+    margin-right: -20px;
+    animation: spin 1s linear infinite;
+    width: 14px;
+    height: 14px;
+    border-radius: 100%;
+    border: 3px solid transparent;
+    border-top: 3px solid white;
+    border-left: 3px solid white;
+}
+
+.send-icon.pause{
+    margin-left: -20px;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

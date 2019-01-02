@@ -21,20 +21,33 @@
       <canvas #canvas>
       </canvas>
     </div>
-    <div #tools class="tools-container">
+    <div class="tools-container">
       <div class="tools">
-        <div class="tools-button palette-tool" (click)="paletteShown = true" [ngStyle]="{'background-color': canvasStroke.strokeStyle}"></div>
-        <div class="tools-button size-tool" (click)="sizesShown = true">
-          <div class="size-circle" [ngStyle]="{'width.px': canvasStroke.lineWidth, 'height.px': canvasStroke.lineWidth, 'background-color': canvasStroke.strokeStyle}"></div>
+        <div #tools>
+          <div class="tools-button palette-tool" (click)="paletteShown = true" [ngStyle]="{'background-color': canvasStroke.strokeStyle }"></div>
+          <div class="tools-button size-tool" (click)="sizesShown = true">
+            <div class="size-circle" [ngStyle]="{'width.px': canvasStroke.lineWidth, 'height.px': canvasStroke.lineWidth, 'background-color': canvasStroke.strokeStyle}"></div>
+          </div>
+          <div class="tools-button pen-tool" (click)="selectedTool = 'pen'" [ngClass]="{'selected': selectedTool == 'pen'}">edit</div>
+          <div class="tools-button eraser-tool" (click)="selectedTool = 'eraser'" [ngClass]="{'selected': selectedTool == 'eraser'}">backspace</div>
+          <!--<div class="tools-button fill-tool" (click)="selectedTool = 'fill'" [ngClass]="{'selected': selectedTool == 'fill'}">format_color_fill</div>-->
+          <div class="tools-button pan-tool" (click)="selectedTool = 'pan'" [ngClass]="{'selected': selectedTool == 'pan'}">pan_tool</div>
+          <div class="tools-button clear-tool" (click)="clearCanvas()">clear</div>
         </div>
-        <div class="tools-button pen-tool" (click)="selectedTool = 'pen'" [ngClass]="{'selected': selectedTool == 'pen'}">edit</div>
-        <div class="tools-button eraser-tool" (click)="selectedTool = 'eraser'" [ngClass]="{'selected': selectedTool == 'eraser'}">backspace</div>
-        <div class="tools-button clear-tool" (click)="selectedTool = 'clear'" [ngClass]="{'selected': selectedTool == 'clear'}">clear</div>
-        <button mat-raised-button (click)="sendImage()" color="primary"><i class="material-icons" style="font-size:20px;">send</i> &nbsp;&nbsp;Send</button>
+        <button #send_button mat-raised-button [ngClass]="{'pause': button_state == 'pause'}" (click)="sendImage()" color="primary">
+          <div class="send-button">
+            <div class="send-icons-container">
+              <i class="material-icons send-icon plane" style="font-size:20px;" [ngClass]="{'hidden': button_state != 'ready'}">send</i>
+              <i class="material-icons send-icon circle" style="font-size:20px;" [ngClass]="{'hidden': button_state != 'sending'}"></i>
+              <i class="material-icons send-icon pause" style="font-size:20px;" [ngClass]="{'hidden': button_state != 'pause'}">pause</i>
+            </div>
+            <div>Send</div>
+          </div>
+        </button>
       </div>
     </div>
   </div>
-  <div #resize_head class="resize-head" [ngStyle]="{ 'left.px': canvas.width / 2 + 10, 'top.px': -tools.offsetHeight - 20 }"></div>
+  <div #resize_head class="resize-head" [ngStyle]="{ 'left.px': canvas.width / 2 + 10, 'top.px': -tools.offsetHeight - 30 }"></div>
 </div>
 <div *ngIf="lastError != ''" class="error-overlay overlay">
   {{lastError}}
