@@ -1,5 +1,8 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<div class="container">
+<div class="logo">
+<img src="assets/sketch.svg">
+</div>
+<div class="container overlay">
   <div class="resizer">
     <div #header class="header" [ngClass]="{ 'wrapped': headerWrapped }">
       <div class="user-section-container">
@@ -48,7 +51,6 @@
     </div>
   </div>
   <div #resize_head class="resize-head" [ngStyle]="{ 'left.px': canvas.width / 2 + 10, 'top.px': -tools.offsetHeight - 30 }"></div>
-  <img src="assets/sketch.svg">
 </div>
 <div *ngIf="lastError != ''" class="error-overlay overlay">
   {{lastError}}
