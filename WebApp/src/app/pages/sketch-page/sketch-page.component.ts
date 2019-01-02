@@ -92,14 +92,8 @@ export class SketchPageComponent implements OnInit {
     if (token == null) {
       this.sendToVerify()
     }
-    this.getUser().then(() =>
-      this.getChannelData().catch(e => {
-        this.lastError = e.error;
-        if (e.status == 0) {
-          this.lastError = "Connection error";
-        }
-      })
-    ).catch(() => null)
+
+    this.testChannelUser()
 
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
     this.cx = canvasEl.getContext('2d');
@@ -132,6 +126,18 @@ export class SketchPageComponent implements OnInit {
     this.captureCanvasEvents(canvasEl);
     this.fixCanvasWidth(null)
     this.fixCanvasStroke()
+  }
+
+  async testChannelUser(){
+    await this.getUser().then(async () =>
+    await this.getChannelData().catch(e => {
+      this.lastError = e.error;
+      if (e.status == 0) {
+        this.lastError = "Connection error";
+      }
+    })
+  ).catch(() => null)
+
   }
 
   public minWidth = 0;
@@ -294,8 +300,9 @@ export class SketchPageComponent implements OnInit {
 
   async sendImage() {
     let data = this.canvas.nativeElement.toDataURL();
-    if (this.user != null && this.button_state == 'ready') {
+    if (this.user != null && this.lastError == "" && this.button_state == 'ready') {
       this.button_state = 'sending'
+      await this.testChannelUser()
       await this.webapi.postImage(data, this.user.id, this.cid)
       this.button_state = 'pause'
       window.setTimeout(() => this.button_state = 'ready', 10000)
@@ -304,6 +311,9 @@ export class SketchPageComponent implements OnInit {
 
   sendToVerify() {
     let state = this.cid;
+    if (window.location.href.startsWith('http://localhost:4200'))
+    window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.appspot.com%2F&response_type=code&scope=identify&state=x' + state;
+    else
     window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.appspot.com%2F&response_type=code&scope=identify&state=' + state;
   }
 

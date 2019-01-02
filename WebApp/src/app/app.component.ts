@@ -16,7 +16,11 @@ export class AppComponent {
       if (code != null) {
         let response = await this.webapi.requestToken(code);
         console.log(response);
-        this.router.navigate(['sketch/' + state]);
+        if (state[0] == 'x'){
+          state = state.substring(1)
+          window.location.href = 'http://localhost:4200/sketch/' + state
+        }
+        else this.router.navigate(['sketch/' + state]);
       }
     })
   }
