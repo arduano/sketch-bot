@@ -171,10 +171,12 @@ export class SketchPageComponent implements OnInit {
   changeColor(c) {
     this.canvasStroke.strokeStyle = c;
     this.fixCanvasStroke()
+    this.selectedTool = 'pen'
   }
   changeSize(s) {
     this.canvasStroke.lineWidth = s;
     this.fixCanvasStroke()
+    this.selectedTool = 'pen'
   }
 
   captureCanvasEvents(canvasEl: HTMLCanvasElement) {

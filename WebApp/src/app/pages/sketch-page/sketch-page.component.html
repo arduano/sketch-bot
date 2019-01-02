@@ -48,7 +48,6 @@
     </div>
   </div>
   <div #resize_head class="resize-head" [ngStyle]="{ 'left.px': canvas.width / 2 + 10, 'top.px': -tools.offsetHeight - 30 }"></div>
-  <img src="assets/sketch.svg">
 </div>
 <div *ngIf="lastError != ''" class="error-overlay overlay">
   {{lastError}}
