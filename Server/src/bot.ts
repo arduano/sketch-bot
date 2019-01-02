@@ -23,13 +23,16 @@ export class DiscordBot {
         this.client.on('ready', () => {
             console.log('The bot is ready!');
             console.log('Starting server...');
-            this.client.user.setActivity('testing');
+            this.client.user.setActivity('/sketch');
             this.started = true;
         });
 
         this.client.on('message', (message) => {
             if (message.content.startsWith('/sketch')) {
                 message.channel.send(baseUrl + 'sketch/' + message.channel.id);
+            }
+            if (message.content.startsWith('<@528166288527327262>')){
+                message.channel.send('ok')
             }
         })
         this.client.login(token);
