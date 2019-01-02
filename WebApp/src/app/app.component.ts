@@ -18,7 +18,6 @@ export class AppComponent {
           state = state.substring(1)
           window.location.href.replace('https://sketch-bot.appspot.com', 'http://localhost:4200')
           await this.webapi.requestToken(code);
-          this.router.navigate(['sketch/' + state]);
         }
         else {
           await this.webapi.requestToken(code);
