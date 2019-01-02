@@ -14,13 +14,16 @@ export class AppComponent {
       let code = params['code']
       let state: string = params['state']
       if (code != null) {
-        let response = await this.webapi.requestToken(code);
-        console.log(response);
-        if (state[0] == 'x'){
+        if (state[0] == 'x') {
           state = state.substring(1)
-          window.location.href = 'http://localhost:4200/sketch/' + state
+          window.location.href.replace('https://sketch-bot.appspot.com', 'http://localhost:4200')
+          await this.webapi.requestToken(code);
+          this.router.navigate(['sketch/' + state]);
         }
-        else this.router.navigate(['sketch/' + state]);
+        else {
+          await this.webapi.requestToken(code);
+          this.router.navigate(['sketch/' + state]);
+        }
       }
     })
   }
