@@ -41,6 +41,8 @@ export class WebApiService {
       })
   }
 
+
+
   getMe(token: string) {
     return this.http.get('https://discordapp.com/api/v6/users/@me', {
       headers: {

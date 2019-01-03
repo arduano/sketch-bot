@@ -29,7 +29,15 @@ export class DiscordBot {
 
         this.client.on('message', (message) => {
             if (message.content.startsWith('/sketch')) {
-                message.channel.send(baseUrl + 'sketch/' + message.channel.id);
+                if(baseUrl.includes('localhost')){
+                    if(
+                        message.member.user.id == '242516597170765824' ||
+                        message.member.user.id == '428251537312317441'
+                        ){
+                        message.channel.send(baseUrl + 'sketch/' + message.channel.id);
+                    }
+                }
+                else message.channel.send(baseUrl + 'sketch/' + message.channel.id);
             }
             if (message.content.startsWith('<@528166288527327262>')){
                 message.channel.send('ok')

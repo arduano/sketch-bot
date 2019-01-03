@@ -66,6 +66,23 @@ export class WebApi {
                 res.status(400).send(r.message)
             })
         })
+        router.get('/api/get-token/:token', (req, res) => {
+            let url: any = this.discordApi + 'oauth2/token'
+            let body = {
+                'code': req.params.token,
+                'client_id': '528166288527327262',
+                'client_secret': 'xRW5nL50MzCjngc9AGpozOiR8ZId9MJD',
+                'grant_type': 'refresh_token',
+                'redirect_uri': this.redirect,
+                'scope': 'identify'
+            }
+            let options: any = this.serialize(body)
+            axios.default.post(url, options).then(r => {
+                res.status(200).json(r.data)
+            }).catch(r => {
+                res.status(400).send(r.message)
+            })
+        })
         router.get('/api/get-channel-data/:cid/:uid', async (req, res) => {
             let data = await this.discordBot.confirmChannel(req.params.cid, req.params.uid)
             if (typeof (data) == "string") {
