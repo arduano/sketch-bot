@@ -7,11 +7,11 @@ async function pRun(command) {
   let run = exec.exec(command);
 
   run.stdout.on('data', function (data) {
-    console.log(data);
+    process.stdout.write(data);
   });
 
   run.stderr.on('data', function (data) {
-    console.log(data);
+    process.stdout.write(data);
   });
 
   run.on('exit', function (code) {
