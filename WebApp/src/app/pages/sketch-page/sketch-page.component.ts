@@ -42,21 +42,21 @@ export class SketchPageComponent implements OnInit {
   public button_state = 'ready'
 
   public colors: string[] = [
-    '#67717a',
+    '#9e9e9e',
     '#000000',
     '#FFFFFF',
-    '#FF0000',
-    '#800000',
-    '#FFFF00',
-    '#808000',
-    '#00FF00',
-    '#008000',
-    '#00FFFF',
-    '#008080',
-    '#0000FF',
-    '#000080',
-    '#FF00FF',
-    '#800080',
+    '#f44336',
+    '#ba000d',
+    '#ffeb3b',
+    '#c8b900',
+    '#4caf50',
+    '#087f23',
+    '#00bcd4',
+    '#008ba3',
+    '#2196f3',
+    '#0069c0',
+    '#9c27b0',
+    '#6a0080',
   ]
   public paletteShown = false;
 
@@ -167,7 +167,7 @@ export class SketchPageComponent implements OnInit {
     this.fixCanvasStroke()
   }
 
-  public canvasStroke = { lineWidth: 3, lineCap: 'round', strokeStyle: '#67717a' }
+  public canvasStroke = { lineWidth: 3, lineCap: 'round', strokeStyle: '#9e9e9e' }
   fixCanvasStroke() {
     this.cx.lineWidth = this.canvasStroke.lineWidth;
     this.cx.lineCap = this.canvasStroke.lineCap as CanvasLineCap;

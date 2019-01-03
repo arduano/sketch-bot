@@ -52,13 +52,13 @@ canvas {
 }
 
 .canvas-bg {
-    background-color: hsl(0, 0%, 20%);
+    background-color: #333333;
     margin-top: 15px;
     margin-bottom: 15px;
 }
 
 .resize-head {
-    background-color: #3f51b5;
+    background-color: #7289DA;
     width: 20px;
     height: 20px;
     position: relative;
@@ -111,7 +111,7 @@ canvas {
         font-family: Roboto, Whitney, Helvetica Neue, Helvetica, Arial, sans-serif;
         font-size: 20px;
         color: #7289da;
-        margin: 0px 20px;
+        margin: 0px 15px;
         white-space: nowrap;
         cursor: default;
     }
@@ -137,19 +137,31 @@ button {
 .colors {
     display: flex;
     margin-bottom: 10px;
-    padding: 10px
+    padding: 15px;
 }
 
 .color {
     width: 30px;
     height: 30px;
     cursor: pointer;
-    border-radius: 100%;
-    margin: 0px 5px;
+    border-radius: 0px;
+    margin: 0.5px;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.color:hover {
+    border-radius: 7px;
 }
 
 .colors.expand {
     background-color: #303030;
+}
+
+.color.selected{
+    border-radius: 100%;
 }
 
 .overlay {
@@ -165,7 +177,7 @@ button {
     left: 0;
     .expand {
         box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4);
-        border-radius: 50px;
+        border-radius: 5px;
     }
 }
 
@@ -206,6 +218,7 @@ button {
     margin-right: 10px;
     border: 1px solid #ffffff20;
     padding: 0px;
+    cursor: pointer;
 }
 
 .palette-tool {
@@ -228,16 +241,27 @@ button {
     justify-content: center;
     align-content: center;
     align-items: center;
-    margin: 10px;
+    margin: 15px;
+    border: 1px solid #ffffff00;
+    cursor: pointer;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.size.selected {
+    border-radius: 100%;
+    border: 1px solid #ffffff20;
 }
 
 .size-circle {
     border-radius: 100%;
-    background-color: #fff !important;
+    background-color: #ffffff !important;
 }
 
-.pen-tool,
-    {
+.pen-tool {
     font-family: Material Icons, Roboto, Helvetica, sans-serif;
     font-size: 20px;
     color: #ffffff20;
@@ -245,10 +269,9 @@ button {
     background-size: 0%;
 }
 
-.pen-tool.selected,
-    {
+.pen-tool.selected {
     color: white;
-    background-color: #3f51b550;
+    background-color: #7289DA50;
 }
 
 .eraser-tool {
@@ -313,6 +336,7 @@ button {
     -moz-transition: all 0.2s ease-out;
     -o-transition: all 0.2s ease-out;
     transition: all 0.2s ease-out;
+    background-color: #7289DA !important;
 }
 
 button:active {
@@ -393,7 +417,7 @@ button:active {
 
 
 .logo{
-    background-color: #3f51b5;
+    background-color: #7289DA;
 }
 
 p{

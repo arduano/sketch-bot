@@ -60,13 +60,13 @@
 </div>
 <div class="palette-overlay overlay" [@paletteTransition]="paletteShown" (click)="paletteShown = false">
   <div class="colors expand">
-    <div class="color" *ngFor="let c of colors" [ngStyle]="{'background-color': c}" (click)="changeColor(c)"></div>
+    <div class="color" *ngFor="let c of colors" [ngStyle]="{'background-color': c}" (click)="changeColor(c)" [ngClass]="{'selected': canvasStroke.strokeStyle == c}"></div>
   </div>
 </div>
 <div class="sizes-overlay overlay" [@paletteTransition]="sizesShown" (click)="sizesShown = false">
   <div class="sizes expand">
-    <div class="size" *ngFor="let s of sizes" (click)="changeSize(s)">
-      <div class="size-circle" [ngStyle]="{'width.px': s, 'height.px': s, 'background-color': canvasStroke.strokeStyle}"></div>
+    <div class="size" *ngFor="let s of sizes" (click)="changeSize(s)" [ngClass]="{'selected': canvasStroke.lineWidth == s}">
+      <div class="size-circle" [ngStyle]="{'width.px': s, 'height.px': s}" [ngClass]="{'selected': canvasStroke.lineWidth == s}"></div>
     </div>
   </div>
 </div>
