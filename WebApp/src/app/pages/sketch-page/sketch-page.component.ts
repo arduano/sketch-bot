@@ -41,22 +41,23 @@ export class SketchPageComponent implements OnInit {
 
   public button_state = 'ready'
 
-  public colors: string[] = [
-    '#9e9e9e',
-    '#000000',
-    '#FFFFFF',
-    '#f44336',
-    '#ba000d',
-    '#ffeb3b',
-    '#c8b900',
-    '#4caf50',
-    '#087f23',
-    '#00bcd4',
-    '#008ba3',
-    '#2196f3',
-    '#0069c0',
-    '#9c27b0',
-    '#6a0080',
+  public colors: string[][] = [
+    ['#9e9e9e',
+    '#707070'],
+    ['#000000',
+    '#FFFFFF'],
+    ['#f44336',
+    '#ba000d'],
+    ['#ffeb3b',
+    '#c8b900'],
+    ['#4caf50',
+    '#087f23'],
+    ['#00bcd4',
+    '#008ba3'],
+    ['#2196f3',
+    '#0069c0'],
+    ['#9c27b0',
+    '#6a0080'],
   ]
   public paletteShown = false;
 
@@ -202,14 +203,12 @@ export class SketchPageComponent implements OnInit {
   }
 
   pushUndo(){
-    console.log('push undo');
-    
     let data = this.cx.getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
     let size = [this.canvas.nativeElement.width, this.canvas.nativeElement.height]
     this.undoStack.push([data, size])
+    if (this.undoStack.length > 100) this.undoStack.shift;
   }
   popUndo(){
-    console.log('pop undo');
     if(this.undoStack.length != 1){
       let data = this.undoStack[this.undoStack.length - 2]
       this.undoStack.pop();

@@ -1,9 +1,10 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <div class="logo">
-    <div class="sketch-logo">
-        <img src="assets/sketch.svg">
-    </div>
-<p>Coded by <a href="https://github.com/arduano" target="_blank">Arduano</a>, Styled by <a href="https://nicklas-mstke.github.io/" target="_blank">MSTKE</a>
+  <div class="sketch-logo">
+    <img src="assets/sketch.svg">
+  </div>
+  <p>Coded by <a href="https://github.com/arduano" target="_blank">Arduano</a>, Styled by <a href="https://nicklas-mstke.github.io/"
+      target="_blank">MSTKE</a>
 </div>
 <div class="container overlay">
   <div class="resizer">
@@ -40,7 +41,8 @@
           <div class="tools-button pan-tool" (click)="selectedTool = 'pan'" [ngClass]="{'selected': selectedTool == 'pan'}">pan_tool</div>
           <div class="tools-button clear-tool" (click)="clearCanvas()">clear</div>
         </div>
-        <button #send_button [disabled]="button_state == 'pause'" [disableRipple]="false" mat-raised-button [ngClass]="{'pause': button_state == 'pause'}" (click)="sendImage()" color="primary">
+        <button #send_button [disabled]="button_state == 'pause'" [disableRipple]="false" mat-raised-button [ngClass]="{'pause': button_state == 'pause'}"
+          (click)="sendImage()" color="primary">
           <div class="send-button">
             <div class="send-icons-container">
               <i class="material-icons send-icon plane" style="font-size:20px;" [ngClass]="{'hidden': button_state != 'ready'}">send</i>
@@ -60,7 +62,11 @@
 </div>
 <div class="palette-overlay overlay" [@paletteTransition]="paletteShown" (click)="paletteShown = false">
   <div class="colors expand">
-    <div class="color" *ngFor="let c of colors" [ngStyle]="{'background-color': c}" (click)="changeColor(c)" [ngClass]="{'selected': canvasStroke.strokeStyle == c}"></div>
+    <div class="color-column" *ngFor="let cx of colors">
+      <div class="color" *ngFor="let c of cx" [ngStyle]="{'background-color': c}" (click)="changeColor(c)"
+        [ngClass]="{'selected': canvasStroke.strokeStyle == c}">
+      </div>
+    </div>
   </div>
 </div>
 <div class="sizes-overlay overlay" [@paletteTransition]="sizesShown" (click)="sizesShown = false">
