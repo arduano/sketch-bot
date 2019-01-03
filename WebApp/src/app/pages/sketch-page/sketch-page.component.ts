@@ -81,6 +81,9 @@ export class SketchPageComponent implements OnInit {
   public pfpUrl = "";
   public username = "";
 
+  public keysDown = {}
+
+  public undoStack = []
 
   constructor(private webapi: WebApiService, private route: ActivatedRoute, private router: Router) { }
 
@@ -108,7 +111,7 @@ export class SketchPageComponent implements OnInit {
         drag[1] = res.clientY;
         drag = [drag[0] - state.startPos.x, drag[1] - state.startPos.y];
         let size = [state.startVal.x + drag[0] * 2, state.startVal.y + drag[1] * 2]
-        this.fixCanvasWidth(size)
+        this.fixCanvasSize(size)
       }
 
       let start = (res: any) => {
@@ -120,36 +123,49 @@ export class SketchPageComponent implements OnInit {
         return state
       }
 
-      let resizeDraggable = new Draggable(this.resize_head, start, move, () => null)
+      let resizeDraggable = new Draggable(this.resize_head, start, move, () => this.pushUndo())
+
+      this.pushUndo()
     }
 
     this.captureCanvasEvents(canvasEl);
-    this.fixCanvasWidth(null)
+    this.fixCanvasSize(null)
     this.fixCanvasStroke()
-  }
 
-  async testChannelUser(){
-    await this.getUser().then(async () =>
-    await this.getChannelData().catch(e => {
-      this.lastError = e.error;
-      if (e.status == 0) {
-        this.lastError = "Connection error";
+    fromEvent(window, 'keydown').subscribe((e: any) => {
+      this.keysDown[e.key] = true
+      if(e.key == 'z' && this.keysDown['Control'] == true){
+        //console.log('undo');
+        this.popUndo();
       }
     })
-  ).catch(() => null)
+    fromEvent(window, 'keyup').subscribe((e: any) => {
+      this.keysDown[e.key] = false
+    })
+  }
+
+  async testChannelUser() {
+    await this.getUser().then(async () =>
+      await this.getChannelData().catch(e => {
+        this.lastError = e.error;
+        if (e.status == 0) {
+          this.lastError = "Connection error";
+        }
+      })
+    ).catch(() => null)
 
   }
 
   public minWidth = 0;
   setMinWidth() {
     this.minWidth = Math.max(
-      this.user_section.nativeElement.clientWidth, 
+      this.user_section.nativeElement.clientWidth,
       this.server_section.nativeElement.clientWidth,
       this.tools.nativeElement.clientWidth + this.send_button._elementRef.nativeElement.clientWidth
-      )
+    )
   }
 
-  fixCanvasWidth(size = null) {
+  fixCanvasSize(size = null) {
     this.setMinWidth()
     if (size == null) size = [this.canvas.nativeElement.width, this.canvas.nativeElement.height]
     if (size[0] < this.minWidth) size[0] = this.minWidth;
@@ -183,6 +199,25 @@ export class SketchPageComponent implements OnInit {
     this.canvasStroke.lineWidth = s;
     this.fixCanvasStroke()
     this.selectedTool = 'pen'
+  }
+
+  pushUndo(){
+    console.log('push undo');
+    
+    let data = this.cx.getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
+    let size = [this.canvas.nativeElement.width, this.canvas.nativeElement.height]
+    this.undoStack.push([data, size])
+  }
+  popUndo(){
+    console.log('pop undo');
+    if(this.undoStack.length != 1){
+      let data = this.undoStack[this.undoStack.length - 2]
+      this.undoStack.pop();
+      let size = data[1];
+      data = data[0];
+      this.fixCanvasSize(size)
+      this.cx.putImageData(data, 0, 0);
+    }
   }
 
   captureCanvasEvents(canvasEl: HTMLCanvasElement) {
@@ -277,7 +312,7 @@ export class SketchPageComponent implements OnInit {
       return res
     }
 
-    let canvasDraw = new Draggable(this.canvas, start, move, () => { this.prevEvents = [] })
+    let canvasDraw = new Draggable(this.canvas, start, move, () => { this.prevEvents = []; this.pushUndo(); })
   }
 
   drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
@@ -296,6 +331,7 @@ export class SketchPageComponent implements OnInit {
   clearCanvas() {
     let canvas: HTMLCanvasElement = this.canvas.nativeElement;
     this.cx.clearRect(0, 0, canvas.width, canvas.height);
+    this.pushUndo()
   }
 
   async sendImage() {
@@ -312,9 +348,9 @@ export class SketchPageComponent implements OnInit {
   sendToVerify() {
     let state = this.cid;
     if (window.location.href.startsWith('http://localhost:4200'))
-    window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.appspot.com%2F&response_type=code&scope=identify&state=x' + state;
+      window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.appspot.com%2F&response_type=code&scope=identify&state=x' + state;
     else
-    window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.appspot.com%2F&response_type=code&scope=identify&state=' + state;
+      window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.appspot.com%2F&response_type=code&scope=identify&state=' + state;
   }
 
   async getUser() {
