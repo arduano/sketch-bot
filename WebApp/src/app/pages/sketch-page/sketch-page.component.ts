@@ -337,6 +337,7 @@ export class SketchPageComponent implements OnInit {
     let data = this.canvas.nativeElement.toDataURL();
     if (this.user != null && this.lastError == "" && this.button_state == 'ready') {
       this.button_state = 'sending'
+      await this.getUser()
       await this.testChannelUser()
       await this.webapi.postImage(data, this.user.id, this.cid)
       this.button_state = 'pause'
