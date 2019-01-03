@@ -43,21 +43,21 @@ export class SketchPageComponent implements OnInit {
 
   public colors: string[][] = [
     ['#9e9e9e',
-    '#707070'],
+      '#707070'],
     ['#000000',
-    '#FFFFFF'],
+      '#FFFFFF'],
     ['#f44336',
-    '#ba000d'],
+      '#ba000d'],
     ['#ffeb3b',
-    '#c8b900'],
+      '#c8b900'],
     ['#4caf50',
-    '#087f23'],
+      '#087f23'],
     ['#00bcd4',
-    '#008ba3'],
+      '#008ba3'],
     ['#2196f3',
-    '#0069c0'],
+      '#0069c0'],
     ['#9c27b0',
-    '#6a0080'],
+      '#6a0080'],
   ]
   public paletteShown = false;
 
@@ -135,7 +135,7 @@ export class SketchPageComponent implements OnInit {
 
     fromEvent(window, 'keydown').subscribe((e: any) => {
       this.keysDown[e.key] = true
-      if(e.key == 'z' && this.keysDown['Control'] == true){
+      if (e.key == 'z' && this.keysDown['Control'] == true) {
         //console.log('undo');
         this.popUndo();
       }
@@ -202,14 +202,14 @@ export class SketchPageComponent implements OnInit {
     this.selectedTool = 'pen'
   }
 
-  pushUndo(){
+  pushUndo() {
     let data = this.cx.getImageData(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
     let size = [this.canvas.nativeElement.width, this.canvas.nativeElement.height]
     this.undoStack.push([data, size])
     if (this.undoStack.length > 100) this.undoStack.shift;
   }
-  popUndo(){
-    if(this.undoStack.length != 1){
+  popUndo() {
+    if (this.undoStack.length != 1) {
       let data = this.undoStack[this.undoStack.length - 2]
       this.undoStack.pop();
       let size = data[1];
@@ -354,7 +354,17 @@ export class SketchPageComponent implements OnInit {
 
   async getUser() {
     let token = this.webapi.getToken();
-    let user: any = await this.webapi.getMe(token);
+    let user: any;
+    try {
+      user = await this.webapi.getMe(token)
+    }
+    catch (e) {
+      if (e.status == 401) {
+        await this.webapi.refreshToken();
+        await this.getUser()
+        return
+      }
+    }
     this.user = user;
     this.pfpUrl = 'https://cdn.discordapp.com/avatars/' + this.user.id + '/' + this.user.avatar + '.png'
     this.username = user.username;
@@ -370,6 +380,7 @@ export class SketchPageComponent implements OnInit {
     else this.lastError = "Couldn't find channel";
     this.checkWrapped()
   }
+
 
   flood_fill(x, y, color) {
     color = this.color_to_rgba(color)

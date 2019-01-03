@@ -66,7 +66,7 @@ export class WebApi {
                 res.status(400).send(r.message)
             })
         })
-        router.get('/api/get-token/:token', (req, res) => {
+        router.get('/api/refresh-token/:token', (req, res) => {
             let url: any = this.discordApi + 'oauth2/token'
             let body = {
                 'code': req.params.token,

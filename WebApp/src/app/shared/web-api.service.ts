@@ -23,15 +23,25 @@ export class WebApiService {
     localStorage.removeItem('refresh_token')
   }
 
-  refreshToken() {
-
-  }
-
   requestToken(code: string) {
     console.log('REQUESTING TOKEN');
 
     let url = this.baseUrl + 'api/get-token/' + code
     return this.http.get(url)
+      .toPromise().then((a: any) => {
+        localStorage.setItem('access_token', a.access_token)
+        localStorage.setItem('expires_in', a.expires_in)
+        localStorage.setItem('refresh_token', a.refresh_token)
+        console.log(a);
+        return a;
+      })
+  }
+
+  async refreshToken() {
+    console.log('REQUESTING TOKEN');
+
+    let url = this.baseUrl + 'api/refresh-token/' + localStorage.getItem('refresh_token')
+    return await this.http.get(url)
       .toPromise().then((a: any) => {
         localStorage.setItem('access_token', a.access_token)
         localStorage.setItem('expires_in', a.expires_in)
@@ -48,7 +58,7 @@ export class WebApiService {
       headers: {
         'Authorization': 'Bearer ' + token
       }
-    }).toPromise()
+    }).toPromise().catch(e => console.log(e))
   }
 
   getGuildChannel(cid: string, uid: string) {
