@@ -64,7 +64,7 @@ export class WebApiService {
 
   async postImage(data, uid, cid: string) {
     let url = this.baseUrl + 'api/post/' + cid
-    return await this.http.post(url, { image: data, user: uid }).toPromise()
+    return await this.http.post(url, { image: data, user: this.getToken() }).toPromise()
       .then(() => true)
       .catch(() => false)
   }

@@ -92,9 +92,15 @@ export class WebApi {
             res.json(data);
         })
         router.post('/api/post/:cid', async (req, res) => {
-            let status = await this.discordBot.sendImage(req.body.image, req.body.user, req.params.cid)
-            if (status == true) res.status(200).send('Sent');
-            else res.status(400).send(status);
+            let url: any = 'https://discordapp.com/api/v6/users/@me'
+            let AuthStr = 'Bearer '.concat(req.body.user)
+            await axios.default.get(url, { headers: { Authorization: AuthStr } }).then(async r => {
+                let status = await this.discordBot.sendImage(req.body.image, r.data.id, req.params.cid)
+                if (status == true) res.status(200).send('Sent');
+                else res.status(400).send(status);
+            }).catch(r => {
+                res.status(400).send(r.message)
+            })            
         })
         router.get('**', (req, res) => {
             if (fs.existsSync(path.join(__dirname, req.url))) {
