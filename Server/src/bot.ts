@@ -44,7 +44,17 @@ export class DiscordBot {
                 catch{ }
             }
             if (message.content.startsWith('/sketch')) {
-                message.channel.send(baseUrl + 'sketch/' + message.channel.id);
+                let id = message.content.substring(8)
+                if (id.length > 0) {
+                    let img = this.getImage(message.channel.id, message.id)
+                    if (img == null) {
+                        message.channel.send("Image not found (has to be in the same channel, sent by the bot)");
+                    }
+                    else {
+                        message.channel.send(baseUrl + 'sketch/' + message.channel.id + '/' + id);
+                    }
+                }
+                else message.channel.send(baseUrl + 'sketch/' + message.channel.id);
             }
             if (message.content.startsWith('<@528166288527327262>')) {
                 message.channel.send('ok')
@@ -109,6 +119,7 @@ export class DiscordBot {
             message = await channel.fetchMessage(mid)
         }
         catch{ return null }
+        if (message.member.user.id != '528166288527327262') return null;
         let att = message.attachments.array()[0]
         if (att == null) { return null; }
         if (att.width == null || att.height == null) { return null; }

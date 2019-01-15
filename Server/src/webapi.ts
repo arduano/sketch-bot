@@ -87,7 +87,7 @@ export class WebApi {
             
             let img = await this.discordBot.getImage(req.params.cid, req.params.mid)
             if (img == null) {res.status(400).send("Image not found")}
-            res.status(200).send(img)
+            else res.status(200).send(img)
 
             //let data = await this.discordBot.confirmChannel(req.params.cid, req.params.uid)
         })
