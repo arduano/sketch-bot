@@ -45,7 +45,7 @@ export class DiscordBot {
             }
             if (message.content.startsWith('/sketch')) {
                 let id = message.content.substring(8)
-                if (id.length > 0) {
+                if (id.length > 0 && message.content.startsWith('/sketch ')) {
                     let img = this.getImage(message.channel.id, message.id)
                     if (img == null) {
                         message.channel.send("Image not found (has to be in the same channel, sent by the bot)");
