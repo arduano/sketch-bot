@@ -16,6 +16,7 @@ export class AppComponent {
       if (code != null) {
         if (state[0] == 'x') {
           state = state.substring(1)
+          state = state.replace('x', '/')
           if (window.location.href.replace('https://sketch-bot.appspot.com', 'http://localhost:4200') != window.location.href)
             window.location.href = window.location.href.replace('https://sketch-bot.appspot.com', 'http://localhost:4200')
           else {

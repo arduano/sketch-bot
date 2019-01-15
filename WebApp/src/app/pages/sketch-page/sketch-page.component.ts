@@ -164,7 +164,7 @@ export class SketchPageComponent implements OnInit {
     if (resp == null) return;
     this.fixCanvasSize([resp.width, resp.height])
     var img = new Image;
-    img.crossOrigin="anonymous"
+    img.crossOrigin = "anonymous"
     img.onload = () => {
       this.cx.drawImage(img, 0, 0); // Or at whatever offset you like
     };
@@ -375,6 +375,7 @@ export class SketchPageComponent implements OnInit {
 
   sendToVerify() {
     let state = this.cid;
+    if (this.mid != null) state += 'x' + this.mid;
     if (window.location.href.startsWith('http://localhost:4200'))
       window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.appspot.com%2F&response_type=code&scope=identify&state=x' + state;
     else
@@ -390,7 +391,13 @@ export class SketchPageComponent implements OnInit {
     catch (e) {
       if (e.status == 401) {
         await this.webapi.refreshToken();
-        await this.getUser()
+        try {
+          await this.getUser()
+        }
+        catch{
+          this.webapi.deleteToken()
+          this.sendToVerify()
+        }
         return
       }
     }
