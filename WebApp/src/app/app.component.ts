@@ -25,6 +25,7 @@ export class AppComponent {
           }
         }
         else {
+          state = state.replace('x', '/')
           await this.webapi.requestToken(code);
           this.router.navigate(['sketch/' + state]);
         }

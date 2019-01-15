@@ -75,13 +75,25 @@ gulp.task('ng', async function(cb){
   await pRun('cd WebApp && ng serve')
 })
 
-gulp.task('install', async function(cb){
+async function install(){
   await pRun('npm install -g typescript @angular/cli')
   await pRun('npm install')
   await pRun('cd WebApp && npm install')
   await pRun('cd Server && npm install')
+}
+
+gulp.task('install', async function(cb){
+  await install()
 })
 
 gulp.task('replace', async function(cb){
   await pRun('python replace_localhost.py')
+})
+
+gulp.task('deploy', async function(cb){
+  await install()
+  await clientBuild(cb)
+  await serverBuild(cb)
+  await pRun('python replace_localhost.py')
+  await pRun('cd www && gcloud app deploy -q')
 })
