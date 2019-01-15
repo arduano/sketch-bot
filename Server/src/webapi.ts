@@ -83,6 +83,14 @@ export class WebApi {
                 res.status(400).send(r.message)
             })
         })
+        router.get('/api/get-img/:cid/:mid', async (req, res) => {
+            
+            let img = await this.discordBot.getImage(req.params.cid, req.params.mid)
+            if (img == null) {res.status(400).send("Image not found")}
+            res.status(200).send(img)
+
+            //let data = await this.discordBot.confirmChannel(req.params.cid, req.params.uid)
+        })
         router.get('/api/get-channel-data/:cid/:uid', async (req, res) => {
             let data = await this.discordBot.confirmChannel(req.params.cid, req.params.uid)
             if (typeof (data) == "string") {

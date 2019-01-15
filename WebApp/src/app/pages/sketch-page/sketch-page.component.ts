@@ -75,6 +75,7 @@ export class SketchPageComponent implements OnInit {
 
   public user: any = { username: "" };
   private cid: string;
+  private mid: string;
   public channelDetails: any = { "guildName": "", "guildIconUrl": "", "channelName": "" };
 
   public lastError = "";
@@ -88,61 +89,88 @@ export class SketchPageComponent implements OnInit {
 
   constructor(private webapi: WebApiService, private route: ActivatedRoute, private router: Router) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.route.params.subscribe((params) => {
       this.cid = params['cid']
-    })
-    let token = this.webapi.getToken();
-    if (token == null) {
-      this.sendToVerify()
-    }
+      this.mid = params['mid']
 
-    this.testChannelUser()
 
-    const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
-    this.cx = canvasEl.getContext('2d');
 
-    canvasEl.width = this.width;
-    canvasEl.height = this.height;
-    {
-      var move = (res: any, state: { startPos: { x: number, y: number }, startVal: any }) => {
-        res.preventDefault();
-        let drag = [0, 0];
-        drag[0] = res.clientX;
-        drag[1] = res.clientY;
-        drag = [drag[0] - state.startPos.x, drag[1] - state.startPos.y];
-        let size = [state.startVal.x + drag[0] * 2, state.startVal.y + drag[1] * 2]
-        this.fixCanvasSize(size)
+      let token = this.webapi.getToken();
+      if (token == null) {
+        this.sendToVerify()
       }
 
-      let start = (res: any) => {
-        let state = { startPos: { x: 0, y: 0 }, startVal: { x: 0, y: 0 } }
-        state.startPos.x = res.clientX
-        state.startPos.y = res.clientY
-        state.startVal.x = this.canvas.nativeElement.width
-        state.startVal.y = this.canvas.nativeElement.height
-        return state
+      this.testChannelUser()
+      console.log(this.mid)
+      if (this.mid != null) {
+        this.getIdImage()
       }
 
-      let resizeDraggable = new Draggable(this.resize_head, start, move, () => this.pushUndo())
+      const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
+      this.cx = canvasEl.getContext('2d');
 
-      this.pushUndo()
-    }
+      canvasEl.width = this.width;
+      canvasEl.height = this.height;
+      {
+        var move = (res: any, state: { startPos: { x: number, y: number }, startVal: any }) => {
+          res.preventDefault();
+          let drag = [0, 0];
+          drag[0] = res.clientX;
+          drag[1] = res.clientY;
+          drag = [drag[0] - state.startPos.x, drag[1] - state.startPos.y];
+          let size = [state.startVal.x + drag[0] * 2, state.startVal.y + drag[1] * 2]
+          this.fixCanvasSize(size)
+        }
 
-    this.captureCanvasEvents(canvasEl);
-    this.fixCanvasSize(null)
-    this.fixCanvasStroke()
+        let start = (res: any) => {
+          let state = { startPos: { x: 0, y: 0 }, startVal: { x: 0, y: 0 } }
+          state.startPos.x = res.clientX
+          state.startPos.y = res.clientY
+          state.startVal.x = this.canvas.nativeElement.width
+          state.startVal.y = this.canvas.nativeElement.height
+          return state
+        }
 
-    fromEvent(window, 'keydown').subscribe((e: any) => {
-      this.keysDown[e.key] = true
-      if (e.key == 'z' && this.keysDown['Control'] == true) {
-        //console.log('undo');
-        this.popUndo();
+        let resizeDraggable = new Draggable(this.resize_head, start, move, () => this.pushUndo())
+
+        this.pushUndo()
+      }
+
+      this.captureCanvasEvents(canvasEl);
+      this.fixCanvasSize(null)
+      this.fixCanvasStroke()
+
+      fromEvent(window, 'keydown').subscribe((e: any) => {
+        this.keysDown[e.key] = true
+        if (e.key == 'z' && this.keysDown['Control'] == true) {
+          //console.log('undo');
+          this.popUndo();
+        }
+      })
+      fromEvent(window, 'keyup').subscribe((e: any) => {
+        this.keysDown[e.key] = false
+      })
+    })
+  }
+
+  async getIdImage() {
+    let resp: any = await this.webapi.getImage(this.cid, this.mid).catch(e => {
+      this.lastError = e.error;
+      if (e.status == 0) {
+        this.lastError = "Connection error";
       }
     })
-    fromEvent(window, 'keyup').subscribe((e: any) => {
-      this.keysDown[e.key] = false
-    })
+    if (resp == null) return;
+    this.fixCanvasSize([resp.width, resp.height])
+    var img = new Image;
+    img.crossOrigin="anonymous"
+    img.onload = () => {
+      this.cx.drawImage(img, 0, 0); // Or at whatever offset you like
+    };
+    img.src = resp.url;
+    console.log(resp);
+
   }
 
   async testChannelUser() {

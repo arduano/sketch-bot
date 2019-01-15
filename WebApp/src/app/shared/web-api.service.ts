@@ -24,8 +24,6 @@ export class WebApiService {
   }
 
   requestToken(code: string) {
-    console.log('REQUESTING TOKEN');
-
     let url = this.baseUrl + 'api/get-token/' + code
     return this.http.get(url)
       .toPromise().then((a: any) => {
@@ -67,5 +65,10 @@ export class WebApiService {
     return await this.http.post(url, { image: data, user: this.getToken() }).toPromise()
       .then(() => true)
       .catch(() => false)
+  }
+
+  getImage(cid: string, mid: string){
+    let url = this.baseUrl + 'api/get-img/' + cid + '/' + mid
+    return this.http.get(url).toPromise()
   }
 }

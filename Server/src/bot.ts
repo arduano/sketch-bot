@@ -27,18 +27,21 @@ export class DiscordBot {
             this.started = true;
             let guilds = this.client.guilds.array().map(s => s.name)
             console.log('Guilds:')
-            for (var s in guilds){
+            for (var s in guilds) {
                 console.log(guilds[s])
             }
         });
 
         this.client.on('message', (message) => {
             if (baseUrl.includes('localhost')) {
-                if (
-                    message.member.user.id != '242516597170765824' &&
-                    message.member.user.id != '428251537312317441'
-                ) 
-                return
+                try {
+                    if (
+                        message.member.user.id != '242516597170765824' &&
+                        message.member.user.id != '428251537312317441'
+                    )
+                        return
+                }
+                catch{ }
             }
             if (message.content.startsWith('/sketch')) {
                 message.channel.send(baseUrl + 'sketch/' + message.channel.id);
@@ -96,5 +99,19 @@ export class DiscordBot {
             new Discord.Attachment(buffer, 'image.png')
         );
         return true;
+    }
+
+    public async getImage(cid, mid) {
+        let channel = this.client.channels.get(cid) as Discord.TextChannel;
+        if (channel == null) { return null; }
+        let message;
+        try {
+            message = await channel.fetchMessage(mid)
+        }
+        catch{ return null }
+        let att = message.attachments.array()[0]
+        if (att == null) { return null; }
+        if (att.width == null || att.height == null) { return null; }
+        return { width: att.width, height: att.height, url: att.proxyURL }
     }
 }
