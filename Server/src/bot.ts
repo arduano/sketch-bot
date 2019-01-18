@@ -78,7 +78,8 @@ export class DiscordBot {
         if (!(
             channel.memberPermissions(member).has(Discord.Permissions.FLAGS.VIEW_CHANNEL) &&
             channel.memberPermissions(member).has(Discord.Permissions.FLAGS.SEND_MESSAGES) &&
-            channel.memberPermissions(member).has(Discord.Permissions.FLAGS.ATTACH_FILES)
+            channel.memberPermissions(member).has(Discord.Permissions.FLAGS.ATTACH_FILES) || 
+            channel.memberPermissions(member).has(Discord.Permissions.FLAGS.ADMINISTRATOR)
         )) {
             return 'Invalid user permissions for the channel';
         }
@@ -86,7 +87,8 @@ export class DiscordBot {
         if (!(
             channel.memberPermissions(self).has(Discord.Permissions.FLAGS.VIEW_CHANNEL) &&
             channel.memberPermissions(self).has(Discord.Permissions.FLAGS.SEND_MESSAGES) &&
-            channel.memberPermissions(self).has(Discord.Permissions.FLAGS.ATTACH_FILES)
+            channel.memberPermissions(self).has(Discord.Permissions.FLAGS.ATTACH_FILES) || 
+            channel.memberPermissions(self).has(Discord.Permissions.FLAGS.ADMINISTRATOR)
         )) {
             return 'Invalid bot permissions for the channel';
         }
