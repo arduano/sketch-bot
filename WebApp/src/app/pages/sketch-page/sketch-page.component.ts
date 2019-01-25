@@ -390,14 +390,8 @@ export class SketchPageComponent implements OnInit {
     }
     catch (e) {
       if (e.status == 401) {
-        await this.webapi.refreshToken();
-        try {
-          await this.getUser()
-        }
-        catch{
-          this.webapi.deleteToken()
-          this.sendToVerify()
-        }
+        this.webapi.deleteToken()
+        this.sendToVerify()
         return
       }
     }
