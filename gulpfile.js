@@ -95,5 +95,5 @@ gulp.task('deploy', async function(cb){
   await clientBuild(cb)
   await serverBuild(cb)
   await pRun('python replace_localhost.py')
-  await pRun('cd www && gcloud app deploy -q')
+  await pRun('cd www && npm start')
 })
