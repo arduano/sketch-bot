@@ -33,6 +33,12 @@ function join(child) {
   })
 }
 
+async function pushAll(){
+  await pRun('git add .')
+  await pRun('git commit -m \"deploy\"')
+  await pRun('git push')
+}
+
 async function fullBuild(cb){
   await install()
   await clientBuild(cb)
@@ -132,6 +138,7 @@ gulp.task('replace', async function(cb){
 
 gulp.task('deploy', async function(cb){
   await fullBuild(cb)
+  await pushAll();
 })
 
 exports.start = start;
