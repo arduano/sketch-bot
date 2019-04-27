@@ -1,5 +1,5 @@
-const join = require('async-child-process').join;
 const exec = require('child_process');
+const join = require('async-child-process').join;
 
 async function pRun(command) {
   let run = exec.exec(command);
