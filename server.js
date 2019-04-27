@@ -1,3 +1,3 @@
 var gulp = require('./gulpfile.js')
 
-gulp.deploy()
+gulp.start()

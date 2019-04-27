@@ -33,11 +33,14 @@ function join(child) {
   })
 }
 
-async function deploy(){
+async function fullBuild(cb){
   await install()
   await clientBuild(cb)
   await serverBuild(cb)
   await pRun('python replace_localhost.py')
+}
+
+async function start(){
   await pRun('cd www && npm start')
 }
 
@@ -128,7 +131,7 @@ gulp.task('replace', async function(cb){
 })
 
 gulp.task('deploy', async function(cb){
-  deploy()
+  await fullBuild(cb)
 })
 
-exports.deploy = deploy;
+exports.start = start;
