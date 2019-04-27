@@ -51,7 +51,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     var bodyParser = require('body-parser');
     var WebApi = /** @class */ (function () {
         function WebApi(discordBot) {
-            this.redirect = 'https://sketch-bot.appspot.com/';
+            this.redirect = 'https://sketch-bot.herokuapp.com/';
             this.discordApi = 'https://discordapp.com/api/v6/';
             this.discordBot = discordBot;
             this.express = express();
