@@ -34,8 +34,6 @@
     "@types/axios": "^0.14.0",
     "@types/node": "^10.12.18",
     "@types/request-promise-native": "^1.0.15",
-    "async-child-process": "^1.1.1",
-    "child_process": "^1.0.2",
     "gulp": "^4.0.0",
     "gulp-typescript": "^5.0.0",
     "ts-node": "^7.0.1",
