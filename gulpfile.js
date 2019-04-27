@@ -33,6 +33,14 @@ function join(child) {
   })
 }
 
+async function deploy(){
+  await install()
+  await clientBuild(cb)
+  await serverBuild(cb)
+  await pRun('python replace_localhost.py')
+  await pRun('cd www && npm start')
+}
+
 async function pRun(command) {
   let run = exec.exec(command);
 
@@ -120,9 +128,7 @@ gulp.task('replace', async function(cb){
 })
 
 gulp.task('deploy', async function(cb){
-  await install()
-  await clientBuild(cb)
-  await serverBuild(cb)
-  await pRun('python replace_localhost.py')
-  await pRun('cd www && npm start')
+  deploy()
 })
+
+exports.deploy = deploy;

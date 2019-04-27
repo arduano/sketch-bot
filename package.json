@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm install && npm install async-child-process && echo installed! && node server.js"
+    "start": "npm install && node server.js"
   },
   "cloud-repo-tools": {
     "requiresKeyFile": true,
@@ -22,6 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async-child-process": "^1.1.1",
     "axios": "^0.16.2",
     "body-parser": "^1.18.3",
     "connect": "^3.6.6",
