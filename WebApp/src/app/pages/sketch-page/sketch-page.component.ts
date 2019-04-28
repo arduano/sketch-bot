@@ -377,9 +377,9 @@ export class SketchPageComponent implements OnInit {
     let state = this.cid;
     if (this.mid != null) state += 'x' + this.mid;
     if (window.location.href.startsWith('http://localhost:4200'))
-      window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.herokuapp.com%2F&response_type=code&scope=identify&state=x' + state;
+      window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.arduano.io%2F&response_type=code&scope=identify&state=x' + state;
     else
-      window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.herokuapp.com%2F&response_type=code&scope=identify&state=' + state;
+      window.location.href = 'https://discordapp.com/api/oauth2/authorize?client_id=528166288527327262&redirect_uri=https%3A%2F%2Fsketch-bot.arduano.io%2F&response_type=code&scope=identify&state=' + state;
   }
 
   async getUser() {

@@ -138,7 +138,7 @@ gulp.task('replace', async function(cb){
 
 gulp.task('deploy', async function(cb){
   await fullBuild(cb)
-  await pushAll();
+  //await pushAll();
 })
 
 exports.start = start;

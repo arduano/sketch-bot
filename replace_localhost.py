@@ -1,5 +1,5 @@
 import os
-new = 'https://sketch-bot.herokuapp.com'
+new = 'https://sketch-bot.arduano.io'
 orig = 'http://localhost:8080'
 
 for root, _, files in os.walk('www'):

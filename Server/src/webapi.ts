@@ -11,7 +11,7 @@ export class WebApi {
     public express: express.Express;
 
     public discordBot: DiscordBot;
-    private redirect = 'https://sketch-bot.herokuapp.com/';
+    private redirect = 'https://sketch-bot.arduano.io/';
     private discordApi = 'https://discordapp.com/api/v6/';
 
     serialize(obj) {
