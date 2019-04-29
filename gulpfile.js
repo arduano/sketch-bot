@@ -143,5 +143,7 @@ gulp.task('deploy', async function(cb){
 
 gulp.task('prod', async function(cb){
   await fullBuild(cb)
-  await start();
+  while(true){
+    await start();
+  }
 })
