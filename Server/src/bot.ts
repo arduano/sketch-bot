@@ -60,6 +60,9 @@ export class DiscordBot {
                 message.channel.send('ok')
             }
         })
+
+        this.client.on('error', console.error);
+
         this.client.login(token);
     }
 
