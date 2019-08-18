@@ -114,7 +114,8 @@ export class SketchPageComponent implements OnInit {
       canvasEl.height = this.height;
       {
         var move = (res: any, state: { startPos: { x: number, y: number }, startVal: any }) => {
-          res.preventDefault();
+          if(res.touches != null) res = res.touches[0];
+
           let drag = [0, 0];
           drag[0] = res.clientX;
           drag[1] = res.clientY;
@@ -124,6 +125,7 @@ export class SketchPageComponent implements OnInit {
         }
 
         let start = (res: any) => {
+          if(res.touches != null) res = res.touches[0];
           let state = { startPos: { x: 0, y: 0 }, startVal: { x: 0, y: 0 } }
           state.startPos.x = res.clientX
           state.startPos.y = res.clientY
@@ -258,7 +260,7 @@ export class SketchPageComponent implements OnInit {
       return false;
     }, false);
     let move = (res: any) => {
-      res.preventDefault();
+      if(res.touches != null) res = res.touches[0];
       let pos = { x: 0, y: 0 };
       pos.x = res.clientX;
       pos.y = res.clientY;
