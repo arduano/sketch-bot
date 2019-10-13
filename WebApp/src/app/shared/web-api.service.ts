@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -5,10 +6,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class WebApiService {
-  private redirect = 'https://sketch-bot.appspot.com/';
-  private discordApi = 'https://discordapp.com/api/v6/';
   //private baseUrl = 'https://sketch-bot.appspot.com/';
-  private baseUrl = 'http://localhost:8080/';
+  private baseUrl = environment.production ? 'http://sketch-bot.arduano.io/' : 'http://localhost:8080/';
 
   constructor(private http: HttpClient) { }
 
