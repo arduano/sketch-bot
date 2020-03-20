@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 })
 export class WebApiService {
   //private baseUrl = 'https://sketch-bot.appspot.com/';
-  private baseUrl = environment.production ? 'http://sketch-bot.arduano.io/' : 'http://localhost:8080/';
+  private baseUrl = environment.production ? 'https://sketch-bot.arduano.io/' : 'http://localhost:8080/';
 
   constructor(private http: HttpClient) { }
 
