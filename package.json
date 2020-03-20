@@ -23,7 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "async-child-process": "^1.1.1",
-    "axios": "^0.16.2",
+    "axios": "^0.18.1",
     "body-parser": "^1.19.0",
     "connect": "^3.6.6",
     "discord.js": "^11.4.2",
